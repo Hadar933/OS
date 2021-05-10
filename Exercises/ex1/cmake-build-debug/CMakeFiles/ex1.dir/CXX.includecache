@@ -1,0 +1,20 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/cygdrive/c/Users/hadar/Google Drive/year C/semester B/OS/Exercises/ex1/osm.cpp
+osm.h
+/cygdrive/c/Users/hadar/Google Drive/year C/semester B/OS/Exercises/ex1/osm.h
+sys/time.h
+-
+iostream
+-
+math.h
+-
+
+/cygdrive/c/Users/hadar/Google Drive/year C/semester B/OS/Exercises/ex1/osm.h
+
