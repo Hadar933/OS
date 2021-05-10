@@ -4,7 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/cygdrive/c/Users/hadar/Google Drive/year C/semester B/OS/OS/Exercises/ex2/main.cpp" "/cygdrive/c/Users/hadar/Google Drive/year C/semester B/OS/OS/Exercises/ex2/cmake-build-debug/CMakeFiles/ex2.dir/main.cpp.o"
+  "/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex2/uthreads.cpp" "/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex2/cmake-build-debug/CMakeFiles/ex2.dir/uthreads.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

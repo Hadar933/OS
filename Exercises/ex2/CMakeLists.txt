@@ -3,4 +3,4 @@ project(ex2)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(ex2 main.cpp)
+add_executable(ex2 uthreads.cpp uthreads.h)
