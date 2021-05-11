@@ -143,6 +143,114 @@ ex2/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ex2.dir/build.make CMakeFiles/ex2.dir/build
 .PHONY : ex2/fast
 
+Thread.o: Thread.cpp.o
+
+.PHONY : Thread.o
+
+# target to build an object file
+Thread.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ex2.dir/build.make CMakeFiles/ex2.dir/Thread.cpp.o
+.PHONY : Thread.cpp.o
+
+Thread.i: Thread.cpp.i
+
+.PHONY : Thread.i
+
+# target to preprocess a source file
+Thread.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ex2.dir/build.make CMakeFiles/ex2.dir/Thread.cpp.i
+.PHONY : Thread.cpp.i
+
+Thread.s: Thread.cpp.s
+
+.PHONY : Thread.s
+
+# target to generate assembly for a file
+Thread.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ex2.dir/build.make CMakeFiles/ex2.dir/Thread.cpp.s
+.PHONY : Thread.cpp.s
+
+demo_itimer.o: demo_itimer.c.o
+
+.PHONY : demo_itimer.o
+
+# target to build an object file
+demo_itimer.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ex2.dir/build.make CMakeFiles/ex2.dir/demo_itimer.c.o
+.PHONY : demo_itimer.c.o
+
+demo_itimer.i: demo_itimer.c.i
+
+.PHONY : demo_itimer.i
+
+# target to preprocess a source file
+demo_itimer.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ex2.dir/build.make CMakeFiles/ex2.dir/demo_itimer.c.i
+.PHONY : demo_itimer.c.i
+
+demo_itimer.s: demo_itimer.c.s
+
+.PHONY : demo_itimer.s
+
+# target to generate assembly for a file
+demo_itimer.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ex2.dir/build.make CMakeFiles/ex2.dir/demo_itimer.c.s
+.PHONY : demo_itimer.c.s
+
+demo_jmp.o: demo_jmp.c.o
+
+.PHONY : demo_jmp.o
+
+# target to build an object file
+demo_jmp.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ex2.dir/build.make CMakeFiles/ex2.dir/demo_jmp.c.o
+.PHONY : demo_jmp.c.o
+
+demo_jmp.i: demo_jmp.c.i
+
+.PHONY : demo_jmp.i
+
+# target to preprocess a source file
+demo_jmp.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ex2.dir/build.make CMakeFiles/ex2.dir/demo_jmp.c.i
+.PHONY : demo_jmp.c.i
+
+demo_jmp.s: demo_jmp.c.s
+
+.PHONY : demo_jmp.s
+
+# target to generate assembly for a file
+demo_jmp.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ex2.dir/build.make CMakeFiles/ex2.dir/demo_jmp.c.s
+.PHONY : demo_jmp.c.s
+
+demo_singInt_handler.o: demo_singInt_handler.c.o
+
+.PHONY : demo_singInt_handler.o
+
+# target to build an object file
+demo_singInt_handler.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ex2.dir/build.make CMakeFiles/ex2.dir/demo_singInt_handler.c.o
+.PHONY : demo_singInt_handler.c.o
+
+demo_singInt_handler.i: demo_singInt_handler.c.i
+
+.PHONY : demo_singInt_handler.i
+
+# target to preprocess a source file
+demo_singInt_handler.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ex2.dir/build.make CMakeFiles/ex2.dir/demo_singInt_handler.c.i
+.PHONY : demo_singInt_handler.c.i
+
+demo_singInt_handler.s: demo_singInt_handler.c.s
+
+.PHONY : demo_singInt_handler.s
+
+# target to generate assembly for a file
+demo_singInt_handler.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ex2.dir/build.make CMakeFiles/ex2.dir/demo_singInt_handler.c.s
+.PHONY : demo_singInt_handler.c.s
+
 uthreads.o: uthreads.cpp.o
 
 .PHONY : uthreads.o
@@ -179,6 +287,18 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... ex2"
+	@echo "... Thread.o"
+	@echo "... Thread.i"
+	@echo "... Thread.s"
+	@echo "... demo_itimer.o"
+	@echo "... demo_itimer.i"
+	@echo "... demo_itimer.s"
+	@echo "... demo_jmp.o"
+	@echo "... demo_jmp.i"
+	@echo "... demo_jmp.s"
+	@echo "... demo_singInt_handler.o"
+	@echo "... demo_singInt_handler.i"
+	@echo "... demo_singInt_handler.s"
 	@echo "... uthreads.o"
 	@echo "... uthreads.i"
 	@echo "... uthreads.s"

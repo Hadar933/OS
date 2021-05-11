@@ -16,18 +16,18 @@ void catch_int(int sigNum) {
  }
 
 
-int main(void)
-{
-	// Install catch_int as the signal handler for SIGINT.
-	struct sigaction sa;
-	sa.sa_handler = &catch_int;
-	if (sigaction(SIGINT, &sa,NULL) < 0) {
-		printf("sigaction error.");
-	}
-
-  for(;;) {
-	  pause(); // wait until receiving a signal
-  }
-  return 0;
-}
+//int main(void)
+//{
+//	// Install catch_int as the signal handler for SIGINT.
+//	struct sigaction sa;
+//	sa.sa_handler = &catch_int;
+//	if (sigaction(SIGINT, &sa,NULL) < 0) {
+//		printf("sigaction error.");
+//	}
+//
+//  for(;;) {
+//	  pause(); // wait until receiving a signal
+//  }
+//  return 0;
+//}
 

@@ -3,4 +3,4 @@ project(ex2)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(ex2 uthreads.cpp uthreads.h)
+add_executable(ex2 uthreads.cpp uthreads.h demo_itimer.c demo_jmp.c demo_singInt_handler.c Thread.cpp Thread.h)
