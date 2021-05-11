@@ -3,6 +3,9 @@
 #include <stdio.h>
 #include <signal.h>
 #include <sys/time.h>
+#include "Thread.h"
+
+#include <vector>
 
 #define SUCCESS 0
 #define FAILURE -1
@@ -10,7 +13,24 @@
 #define THREAD_ERR "thread library error: "
 
 
+
+
+
+Thread *allThreads[MAX_THREAD_NUM];
+std::vector<Thread*> running;
+std::vector<Thread*> ready;
+std::vector<Thread*> blocked;
+
+
+
+
+
 int gotit = 0 ;
+
+
+
+
+
 
 void timer_handler(int sig)
 {
@@ -20,7 +40,7 @@ void timer_handler(int sig)
 
 int uthreads_init(int quantum_usecs){
     if (quantum_usecs<=0){
-        std::cerr <<THREAD_ERR<< "quantum_usecs must be >= 0" << std::endl;
+        std::cerr <<THREAD_ERR<<"quantum_usecs must be > 0"<< std::endl;
         return FAILURE;
     }
     struct sigaction sa = {nullptr};
@@ -34,8 +54,6 @@ int uthreads_init(int quantum_usecs){
     }
     timer.it_value.tv_sec = 0;
     timer.it_value.tv_usec = quantum_usecs;
-    timer.it_interval.tv_sec = 0;
-    timer.it_interval.tv_usec = quantum_usecs;
     if (setitimer (ITIMER_VIRTUAL, &timer, nullptr)) {
         std::cerr <<SYSTEM_ERR<< "setitimer error." << std::endl;
         exit(1);
@@ -44,7 +62,12 @@ int uthreads_init(int quantum_usecs){
 }
 
 int uthread_spawn(void (*f)(void)){
-    return 0;
+    for (unsigned int i = 0; i< MAX_THREAD_NUM; i++){
+        if (allThreads[i] == nullptr){
+            allThreads[i] = new Thread(f,i);
+        }
+
+    }
 }
 int uthread_terminate(int tid){
     return 0;
