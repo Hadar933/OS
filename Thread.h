@@ -23,16 +23,11 @@ public:
 
     unsigned int getId() const;
 
-    bool isWaitingForMutex() const;
-
-    void setWaitingForMutex(bool waitingForMutex);
-
 private:
     unsigned int _id;
     void (*_entry_point)(void);
     char stack[STACK_SIZE];
     status _thread_status;
-    bool _waiting_for_mutex;
 };
 
 

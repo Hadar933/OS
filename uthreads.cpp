@@ -18,6 +18,8 @@
 Thread *all_threads[MAX_THREAD_NUM];
 std::vector<Thread*> ready;
 std::vector<Thread*> blocked;
+std::vector<Thread*> blocked_by_mutex;
+
 Thread *running_thread; // TODO: this must be updated when ever some thread is switched to running ? ?
 
 int gotit = 0;
@@ -105,30 +107,57 @@ int uthread_resume(int tid){
         if (s == RUNNING || s == READY){ // thread is not blocked
             return SUCCESS;
         }
-        if (thread_tid->isWaitingForMutex()){
-            return SUCCESS;
-        }
         blocked.erase(std::remove(blocked.begin(),blocked.end(),thread_tid),blocked.end()); // removing from blocked
-        ready.push_back(thread_tid); // adding to ready
+        for (int i = 0 ; i < blocked_by_mutex.size(); i++){ // checking if blocked by mutex
+            if (blocked_by_mutex[i]==thread_tid){
+                return SUCCESS;
+            }
+        }
+        ready.push_back(thread_tid); // not locked by mutex - can be ready
         thread_tid->setThreadStatus(READY);
         return SUCCESS;
     }
     return FAILURE;
 }
 int uthread_mutex_lock(){
-    if (mutex == UNLOCKED){
+    // if mutex == -1 we set it to the id of the running thread.
+    // otherwise we lock the running thread (lock by mutex)
+    if(mutex == running_thread->getId()){
+        std::cerr << THREAD_ERR << "mutex already locked by running thread" << std::endl;
+        return FAILURE;
+    }
+    else if (mutex == UNLOCKED){
         mutex = running_thread->getId();
-        return SUCCESS;
     }
     else{ // LOCKED
-        running_thread->setWaitingForMutex(true);
-        uthread_block(running_thread->getId());
-
-
+        blocked_by_mutex.push_back(running_thread);
+        running_thread->setThreadStatus(BLOCKED);
     }
+    return SUCCESS;
+
 }
 int uthread_mutex_unlock(){
-    return 0;
+    if (mutex == UNLOCKED){
+        std::cerr << THREAD_ERR << "mutex already unlocked" << std::endl;
+        return FAILURE;
+    }
+    if (!blocked_by_mutex.empty()){ // there are blocked threads waiting for this mutex
+        Thread *last_thread = blocked_by_mutex.back();
+        blocked_by_mutex.pop_back(); // extracting some thread (specifically the last one)
+        for (int i = 0; i < blocked.size() ; i++){
+            if (blocked[i]==last_thread){ // the thread is blocked by main- we cannot turn it to ready
+                mutex = UNLOCKED;
+                return SUCCESS;
+            }
+        }
+        ready.push_back(last_thread);
+        last_thread->setThreadStatus(READY);
+        mutex = UNLOCKED;
+        return SUCCESS;
+    }
+    mutex = UNLOCKED;
+    return SUCCESS;
+
 }
 int uthread_get_tid(){
     return running_thread->getId();
