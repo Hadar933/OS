@@ -12,7 +12,7 @@
 
 //int gotit = 0;
 //
-//void timer_handler(int sig)
+//void scheduler(int sig)
 //{
 //  gotit = 1;
 //  printf("Timer expired\n");
@@ -23,8 +23,8 @@
 //	struct sigaction sa = {0};
 //	struct itimerval timer;
 //
-//	// Install timer_handler as the signal handler for SIGVTALRM.
-//	sa.sa_handler = &timer_handler;
+//	// Install scheduler as the signal handler for SIGVTALRM.
+//	sa.sa_handler = &scheduler;
 //	if (sigaction(SIGVTALRM, &sa,NULL) < 0) {
 //		printf("sigaction error.");
 //	}

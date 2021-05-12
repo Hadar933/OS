@@ -59,16 +59,17 @@ enum status{
 class Thread {
 public:
     Thread(void (*entryPoint)(void),unsigned int id);
-
+    int getNumOfQuantum() const;
     status getThreadStatus() const;
-
-private:
-public:
+    void inc_quantum(){++(this->num_of_quantum);};
     void setThreadStatus(status threadStatus);
+    bool getTerminated()const;
 
     unsigned int getId() const;
 
     virtual ~Thread();
+
+    void setTerminated(bool terminated);
 
 private:
     unsigned int _id;
@@ -78,6 +79,11 @@ private:
     address_t sp;
     address_t pc;
     sigjmp_buf env;
+    int num_of_quantum;
+    bool terminated;
+public:
+    sigjmp_buf& getEnv() const;
+
 };
 
 

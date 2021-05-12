@@ -8,10 +8,11 @@ Thread::Thread(void (*entry_point)(void), const unsigned int id):
         _id(id), _entry_point(entry_point), _thread_status(READY){
     this->sp = (address_t)this->stack + STACK_SIZE - sizeof(address_t);
     this->pc = (address_t)entry_point;
-    sigsetjmp(this->env, 1);
+    int ret = sigsetjmp(this->env, 1);
     (this->env->__jmpbuf)[JB_SP] = translate_address(sp);
     (this->env->__jmpbuf)[JB_PC] = translate_address(pc);
     sigemptyset(&env->__saved_mask);
+    this->terminated = false;
 }
 
 Thread::~Thread() {
@@ -29,3 +30,22 @@ status Thread::getThreadStatus() const {
 unsigned int Thread::getId() const {
     return _id;
 }
+
+int Thread::getNumOfQuantum() const {
+    return num_of_quantum;
+}
+
+bool Thread::getTerminated() const {
+    return this->terminated;
+}
+
+void Thread::setTerminated(bool terminated) {
+    this->terminated = terminated;
+}
+
+sigjmp_buf& Thread::getEnv() const {
+    return this->env;
+}
+
+
+
