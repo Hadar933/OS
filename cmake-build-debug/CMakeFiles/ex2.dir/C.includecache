@@ -6,23 +6,11 @@
 
 #IncludeRegexTransform: 
 
-/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex2/demo_jmp.c
+/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex2/demo_itimer.c
 stdio.h
 -
-setjmp.h
--
 signal.h
--
-unistd.h
 -
 sys/time.h
--
-
-/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex2/demo_singInt_handler.c
-stdio.h
--
-signal.h
--
-unistd.h
 -
 

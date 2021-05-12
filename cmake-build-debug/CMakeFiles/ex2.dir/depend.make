@@ -7,6 +7,11 @@ CMakeFiles/ex2.dir/demo_jmp.c.o: ../demo_jmp.c
 
 CMakeFiles/ex2.dir/demo_singInt_handler.c.o: ../demo_singInt_handler.c
 
+CMakeFiles/ex2.dir/Thread.cpp.o: ../Thread.cpp
+CMakeFiles/ex2.dir/Thread.cpp.o: ../Thread.h
+CMakeFiles/ex2.dir/Thread.cpp.o: ../uthreads.h
+
+CMakeFiles/ex2.dir/uthreads.cpp.o: ../Thread.h
 CMakeFiles/ex2.dir/uthreads.cpp.o: ../uthreads.cpp
 CMakeFiles/ex2.dir/uthreads.cpp.o: ../uthreads.h
 

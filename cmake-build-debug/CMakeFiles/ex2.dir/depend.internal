@@ -7,6 +7,11 @@ CMakeFiles/ex2.dir/demo_jmp.c.o
  /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex2/demo_jmp.c
 CMakeFiles/ex2.dir/demo_singInt_handler.c.o
  /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex2/demo_singInt_handler.c
+CMakeFiles/ex2.dir/Thread.cpp.o
+ /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex2/Thread.cpp
+ /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex2/Thread.h
+ /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex2/uthreads.h
 CMakeFiles/ex2.dir/uthreads.cpp.o
+ /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex2/Thread.h
  /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex2/uthreads.cpp
  /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex2/uthreads.h

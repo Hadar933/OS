@@ -24,6 +24,11 @@ Thread *running_thread; // TODO: this must be updated when ever some thread is s
 
 int gotit = 0;
 int mutex = -1;
+int total_quantums = 0;
+
+
+#define JB_SP 6
+#define JB_PC 7
 
 
 void timer_handler(int sig)
@@ -163,7 +168,7 @@ int uthread_get_tid(){
     return running_thread->getId();
 }
 int uthread_get_total_quantums(){
-    return 0;
+    return total_quantums;
 }
 int uthread_get_quantums(int tid){
     return 0;
