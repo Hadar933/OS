@@ -115,9 +115,41 @@ int uthread_terminate(int tid){
     BLOCK_SIG;
     if(all_threads[tid]== nullptr){ // to thread with id = tid
         std::cerr << THREAD_ERR << "thread does not exist" << std::endl;
+        ALLOW_SIG;
+        return FAILURE;
     }
+    if(tid == 0){ // terminating main thread
+        ready.clear();
+        blocked.clear();
+        blocked_by_mutex.clear();
+        delete [] *all_threads;
+        exit(EXIT_SUCCESS);
+    }
+    if(tid == running_thread->getId()){
+        ALLOW_SIG;
+        scheduler(0);
+    }
+    /* thread exits - delete it*/
+    Thread *to_terminate = all_threads[tid];
+    if(to_terminate->getThreadStatus() == READY) {
+        ready.erase(std::remove(ready.begin(), ready.end(), to_terminate), ready.end());
+    }
+    else if(to_terminate->getThreadStatus() == BLOCKED){
+        for(unsigned int i=0; i < blocked_by_mutex.size(); i++){
+            if(blocked_by_mutex[i] == to_terminate){
+                blocked_by_mutex.erase(std::remove(blocked_by_mutex.begin(), blocked_by_mutex.end(), to_terminate), blocked_by_mutex.end());
+            }
+        }
+        for(unsigned int i=0; i < blocked.size(); i++){
+            if(blocked_by_mutex[i] == to_terminate){
+                blocked.erase(std::remove(blocked.begin(), blocked.end(), to_terminate), blocked.end());
+            }
+        }
+    }
+    delete to_terminate;
+    all_threads[tid] = nullptr;
     ALLOW_SIG;
-
+    return 0;
 }
 int uthread_block(int tid){
     BLOCK_SIG;
