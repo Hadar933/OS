@@ -52,6 +52,9 @@ void scheduler(int sig)
         ready.erase(std::remove(ready.begin(),ready.end(),first),ready.end()); // remove from ready lst
         if (running_thread->getTerminated()){
             all_threads[running_thread->getId()] = nullptr;
+            if (mutex == running_thread->getId()){
+                mutex = UNLOCKED;
+            }
             delete running_thread;
         }
         first->setThreadStatus(RUNNING);
@@ -102,7 +105,10 @@ int uthread_init(int quantum_usecs){
     running_thread = main_thread;
     main_thread->inc_quantum();
     total_quantums++;
-    sigsetjmp(main_thread->getEnv(),1);
+    int ret_val = sigsetjmp(main_thread->getEnv(),1);
+    if (ret_val==1){
+        return SUCCESS;
+    }
     return SUCCESS;
 }
 
@@ -118,6 +124,7 @@ int uthread_spawn(void (*f)(void)){
         }
     }
     ALLOW_SIG;
+    std::cerr << THREAD_ERR << "max occupancy reached" << std::endl;
     return FAILURE;
 }
 
@@ -152,13 +159,16 @@ int uthread_terminate(int tid){
             }
         }
         for(unsigned int i=0; i < blocked.size(); i++){
-            if(blocked_by_mutex[i] == to_terminate){
+            if(blocked[i] == to_terminate){
                 blocked.erase(std::remove(blocked.begin(), blocked.end(), to_terminate), blocked.end());
             }
         }
     }
     delete to_terminate;
     all_threads[tid] = nullptr;
+    if (mutex == tid){
+        mutex = UNLOCKED;
+    }
     ALLOW_SIG;
     return 0;
 }
@@ -171,7 +181,14 @@ int uthread_block(int tid){
     }
     Thread *thread_tid = all_threads[tid];
     if(tid == running_thread->getId()){
-        scheduler(0); //TODO: ??? dont know yet
+        int ret_val = sigsetjmp(running_thread->getEnv(), 1);//save state
+        if(ret_val==1){
+            ALLOW_SIG;
+            return SUCCESS;
+        }
+        running_thread->setThreadStatus(BLOCKED);
+        blocked.push_back(running_thread);
+        scheduler(0);
     }
 
     if (thread_tid != nullptr){ // thread exists
@@ -222,6 +239,8 @@ int uthread_mutex_lock(){
     BLOCK_SIG;
     // if mutex == -1 we set it to the id of the running thread.
     // otherwise we lock the running thread (lock by mutex)
+    int i = 1;
+    ++i;
     if(mutex == running_thread->getId()){
         std::cerr << THREAD_ERR << "mutex already locked by running thread" << std::endl;
         ALLOW_SIG;
@@ -233,6 +252,12 @@ int uthread_mutex_lock(){
     else{ // LOCKED
         blocked_by_mutex.push_back(running_thread);
         running_thread->setThreadStatus(BLOCKED);
+        int ret_val = sigsetjmp(running_thread->getEnv(),1);
+        if (ret_val == 1){
+            mutex = running_thread->getId();
+            return SUCCESS;
+        }
+        scheduler(0);
     }
     ALLOW_SIG;
     return SUCCESS;
@@ -240,7 +265,8 @@ int uthread_mutex_lock(){
 }
 int uthread_mutex_unlock(){
     BLOCK_SIG;
-    if (mutex == UNLOCKED){
+
+    if (mutex == UNLOCKED || running_thread->getId() != mutex){
         std::cerr << THREAD_ERR << "mutex already unlocked" << std::endl;
         ALLOW_SIG;
         return FAILURE;

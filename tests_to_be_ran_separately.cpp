@@ -653,6 +653,8 @@ TEST(Test10, MutexTest4)
     };
 
     auto t2 = [] {
+        int i =0;
+        ++i;
 
         EXPECT_EQ(uthread_get_tid(), 2);
 
