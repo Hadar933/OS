@@ -36,22 +36,27 @@ sigset_t sig_set;
 
 
 void scheduler(int sig)
-{
-
-    int ret_val = sigsetjmp(running_thread->getEnv(), 1);//save state
-    if(ret_val==1){
-        return;
+{   // only save environment if running thread is not blocked or terminated
+    if (!(running_thread->getThreadStatus() == BLOCKED || running_thread->getTerminated())){
+        int ret_val = sigsetjmp(running_thread->getEnv(), 1);//save state
+        if(ret_val==1){
+            return;
+        }
+        if(!ready.empty()){
+            ready.push_back(running_thread);
+            running_thread->setThreadStatus(READY);
+        }
     }
     if(!ready.empty()){
-        ready.push_back(running_thread);
-        running_thread->setThreadStatus(READY);
-    }
-
-    if (!ready.empty()){
         Thread *first = ready[0];
         ready.erase(std::remove(ready.begin(),ready.end(),first),ready.end()); // remove from ready lst
+        if (running_thread->getTerminated()){
+            all_threads[running_thread->getId()] = nullptr;
+            delete running_thread;
+        }
         first->setThreadStatus(RUNNING);
         running_thread = first;
+
         running_thread->inc_quantum();
         total_quantums++;
         siglongjmp(running_thread->getEnv(), 1);
@@ -61,14 +66,14 @@ void scheduler(int sig)
         running_thread->inc_quantum();
         total_quantums++;
     }
-
 }
 
-int uthreads_init(int quantum_usecs){
+int uthread_init(int quantum_usecs){
     if (quantum_usecs<=0){
         std::cerr <<THREAD_ERR<<"quantum_usecs must be > 0"<< std::endl;
         return FAILURE;
     }
+
     struct sigaction sa = {nullptr};
     struct itimerval timer{};
 
@@ -92,8 +97,12 @@ int uthreads_init(int quantum_usecs){
         exit(1);
     }
 
-    all_threads[0] = new Thread(nullptr,0); // main thread
-    running_thread = all_threads[0];
+    Thread *main_thread = new Thread(nullptr,0);
+    all_threads[0] = main_thread;
+    running_thread = main_thread;
+    main_thread->inc_quantum();
+    total_quantums++;
+    sigsetjmp(main_thread->getEnv(),1);
     return SUCCESS;
 }
 
@@ -104,6 +113,7 @@ int uthread_spawn(void (*f)(void)){
             Thread *new_thread = new Thread(f,i);
             all_threads[i] = new_thread;
             ready.push_back(new_thread);
+            ALLOW_SIG;
             return i;
         }
     }
@@ -114,7 +124,7 @@ int uthread_spawn(void (*f)(void)){
 int uthread_terminate(int tid){
     BLOCK_SIG;
     if(all_threads[tid]== nullptr){ // to thread with id = tid
-        std::cerr << THREAD_ERR << "thread does not exist" << std::endl;
+        std::cerr << THREAD_ERR<< "thread does not exist" << std::endl;
         ALLOW_SIG;
         return FAILURE;
     }
@@ -127,6 +137,7 @@ int uthread_terminate(int tid){
     }
     if(tid == running_thread->getId()){
         ALLOW_SIG;
+        running_thread->setTerminated(true);
         scheduler(0);
     }
     /* thread exits - delete it*/
@@ -153,15 +164,16 @@ int uthread_terminate(int tid){
 }
 int uthread_block(int tid){
     BLOCK_SIG;
-    Thread *thread_tid = all_threads[tid];
-    if(tid == running_thread->getId()){
-        scheduler(0); //TODO: ??? dont know yet
-    }
     if (tid==0){
         std::cerr << THREAD_ERR << "cannot block main thread" << std::endl;
         ALLOW_SIG;
         return FAILURE;
     }
+    Thread *thread_tid = all_threads[tid];
+    if(tid == running_thread->getId()){
+        scheduler(0); //TODO: ??? dont know yet
+    }
+
     if (thread_tid != nullptr){ // thread exists
         if(thread_tid->getThreadStatus()==READY){ // is ready
             for(int i=0;i<ready.size();i++){
@@ -203,6 +215,7 @@ int uthread_resume(int tid){
         return SUCCESS;
     }
     ALLOW_SIG;
+    std::cerr << THREAD_ERR << "no such thread" << std::endl;
     return FAILURE;
 }
 int uthread_mutex_lock(){
@@ -260,6 +273,9 @@ int uthread_get_total_quantums(){
     return total_quantums;
 }
 int uthread_get_quantums(int tid){
-   return all_threads[tid]->getNumOfQuantum();
-
+   if (all_threads[tid] != nullptr){
+       return all_threads[tid]->getNumOfQuantum();
+   }
+   std::cerr << THREAD_ERR << "thread" << tid << "does not exist (no get quantums)" << std::endl;
+   return FAILURE;
 }

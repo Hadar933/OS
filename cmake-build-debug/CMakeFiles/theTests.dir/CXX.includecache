@@ -1,0 +1,40 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex2/Thread.h
+uthreads.h
+/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex2/uthreads.h
+setjmp.h
+-
+signal.h
+-
+unistd.h
+/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex2/unistd.h
+
+/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex2/uthreads.cpp
+iostream
+-
+uthreads.h
+/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex2/uthreads.h
+stdio.h
+-
+signal.h
+-
+setjmp.h
+-
+sys/time.h
+-
+Thread.h
+/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex2/Thread.h
+algorithm
+-
+vector
+-
+
+/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex2/uthreads.h
+
