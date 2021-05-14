@@ -277,6 +277,7 @@ int uthread_mutex_lock(){
         int ret_val = sigsetjmp(running_thread->getEnv(),1);
         if (ret_val == 1){
             mutex = running_thread->getId();
+            ALLOW_SIG;
             return SUCCESS;
         }
         scheduler(0);
