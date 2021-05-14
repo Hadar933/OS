@@ -48,6 +48,15 @@ int look_for(std::vector<Thread*> lst, Thread *item){
     return FAILURE;
 }
 
+void restore_blocked_by_m(){
+    Thread *last_thread = blocked_by_mutex.front();
+    blocked_by_mutex.erase(blocked_by_mutex.begin()); // extracting some thread (specifically the last one)
+    if (look_for(blocked, last_thread) == FAILURE) { // only blocked my mutex (not blocked my main)
+        ready.push_back(last_thread);
+        last_thread->setThreadStatus(READY);
+    }
+}
+
 void scheduler(int sig)
 {   // only save environment if running thread is not blocked or terminated
     if (!(running_thread->getThreadStatus() == BLOCKED || running_thread->getTerminated())){
@@ -65,8 +74,12 @@ void scheduler(int sig)
         ready.erase(std::remove(ready.begin(),ready.end(),first),ready.end()); // remove from ready lst
         if (running_thread->getTerminated()){
             all_threads[running_thread->getId()] = nullptr;
-            mutex = UNLOCKED;
-            //TODO: handle restoring a thread from blocked by mutex
+            if(mutex == running_thread->getId()){
+                if(!blocked_by_mutex.empty()){
+                    restore_blocked_by_m();
+                }
+                mutex = UNLOCKED;
+            }
             delete running_thread;
         }
         first->setThreadStatus(RUNNING);
@@ -272,6 +285,7 @@ int uthread_mutex_lock(){
     return SUCCESS;
 
 }
+
 int uthread_mutex_unlock() {
     BLOCK_SIG;
 
@@ -281,12 +295,7 @@ int uthread_mutex_unlock() {
         return FAILURE;
     }
     if (!blocked_by_mutex.empty()) { // there are blocked threads waiting for this mutex
-        Thread *last_thread = blocked_by_mutex.front();
-        blocked_by_mutex.erase(blocked_by_mutex.begin()); // extracting some thread (specifically the last one)
-        if (look_for(blocked, last_thread) == FAILURE) { // only blocked my mutex (not blocked my main)
-            ready.push_back(last_thread);
-            last_thread->setThreadStatus(READY);
-        }
+        restore_blocked_by_m();
     }
     mutex = UNLOCKED;
     ALLOW_SIG;
