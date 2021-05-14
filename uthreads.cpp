@@ -33,6 +33,20 @@ sigset_t sig_set;
 #define JB_SP 6
 #define JB_PC 7
 
+/**
+ * looking for some element item in some vector lst
+ * @param lst
+ * @param item
+ * @return index
+ */
+int look_for(std::vector<Thread*> lst, Thread *item){
+    for (int i=0;i<lst.size();i++){
+        if (item == lst[i]){
+            return i;
+        }
+    }
+    return FAILURE;
+}
 
 void scheduler(int sig)
 {   // only save environment if running thread is not blocked or terminated
@@ -151,15 +165,12 @@ int uthread_terminate(int tid){
         ready.erase(std::remove(ready.begin(), ready.end(), to_terminate), ready.end());
     }
     else if(to_terminate->getThreadStatus() == BLOCKED){
-        for(unsigned int i=0; i < blocked_by_mutex.size(); i++){
-            if(blocked_by_mutex[i] == to_terminate){
-                blocked_by_mutex.erase(std::remove(blocked_by_mutex.begin(), blocked_by_mutex.end(), to_terminate), blocked_by_mutex.end());
-            }
+        if (look_for(blocked_by_mutex,to_terminate)!= FAILURE){
+            blocked_by_mutex.erase(std::remove(blocked_by_mutex.begin(),
+                                               blocked_by_mutex.end(), to_terminate), blocked_by_mutex.end());
         }
-        for(unsigned int i=0; i < blocked.size(); i++){
-            if(blocked[i] == to_terminate){
-                blocked.erase(std::remove(blocked.begin(), blocked.end(), to_terminate), blocked.end());
-            }
+        if (look_for(blocked,to_terminate) != FAILURE){
+            blocked.erase(std::remove(blocked.begin(), blocked.end(), to_terminate), blocked.end());
         }
     }
     delete to_terminate;
@@ -200,11 +211,8 @@ int uthread_block(int tid){
                 }
             }
         }
-        for (int i=0; blocked_by_mutex.size(); ++i){
-            if(blocked_by_mutex[i] == thread_tid){
-                blocked.push_back(thread_tid);
-                break;
-            }
+        if (look_for(blocked_by_mutex,thread_tid)!= FAILURE){
+            blocked.push_back(thread_tid);
         }
         thread_tid->setThreadStatus(BLOCKED);
         ALLOW_SIG;
@@ -224,11 +232,9 @@ int uthread_resume(int tid){
             return SUCCESS;
         }
         blocked.erase(std::remove(blocked.begin(),blocked.end(),thread_tid),blocked.end()); // removing from blocked
-        for (int i = 0 ; i < blocked_by_mutex.size(); i++){ // checking if blocked by mutex
-            if (blocked_by_mutex[i]==thread_tid){
-                ALLOW_SIG;
-                return SUCCESS;
-            }
+        if (look_for(blocked_by_mutex,thread_tid)!=FAILURE){
+            ALLOW_SIG;
+            return SUCCESS;
         }
         ready.push_back(thread_tid); // not locked by mutex - can be ready
         thread_tid->setThreadStatus(READY);
@@ -266,35 +272,27 @@ int uthread_mutex_lock(){
     return SUCCESS;
 
 }
-int uthread_mutex_unlock(){
+int uthread_mutex_unlock() {
     BLOCK_SIG;
 
-    if (mutex == UNLOCKED || running_thread->getId() != mutex){
+    if (mutex == UNLOCKED || running_thread->getId() != mutex) {
         std::cerr << THREAD_ERR << "mutex already unlocked" << std::endl;
         ALLOW_SIG;
         return FAILURE;
     }
-    if (!blocked_by_mutex.empty()){ // there are blocked threads waiting for this mutex
+    if (!blocked_by_mutex.empty()) { // there are blocked threads waiting for this mutex
         Thread *last_thread = blocked_by_mutex.front();
         blocked_by_mutex.erase(blocked_by_mutex.begin()); // extracting some thread (specifically the last one)
-        for (int i = 0; i < blocked.size() ; i++){
-            if (blocked[i]==last_thread){ // the thread is blocked by main- we cannot turn it to ready
-                mutex = UNLOCKED;
-                ALLOW_SIG;
-                return SUCCESS;
-            }
+        if (look_for(blocked, last_thread) == FAILURE) { // only blocked my mutex (not blocked my main)
+            ready.push_back(last_thread);
+            last_thread->setThreadStatus(READY);
         }
-        ready.push_back(last_thread);
-        last_thread->setThreadStatus(READY);
-        mutex = UNLOCKED;
-        ALLOW_SIG;
-        return SUCCESS;
     }
     mutex = UNLOCKED;
     ALLOW_SIG;
     return SUCCESS;
-
 }
+
 int uthread_get_tid(){
     return running_thread->getId();
 }
