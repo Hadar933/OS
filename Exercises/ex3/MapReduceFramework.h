@@ -2,6 +2,8 @@
 #define MAPREDUCEFRAMEWORK_H
 
 #include "MapReduceClient.h"
+#include "atomic"
+
 
 typedef void* JobHandle;
 
