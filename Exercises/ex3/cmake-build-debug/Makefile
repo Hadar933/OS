@@ -68,10 +68,10 @@ RM = /usr/local/APP/jetbrains/clion/2020.2/bin/cmake/linux/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex3
+CMAKE_SOURCE_DIR = /cs/usr/shulik10/OS/OS/Exercises/ex3
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex3/cmake-build-debug
+CMAKE_BINARY_DIR = /cs/usr/shulik10/OS/OS/Exercises/ex3/cmake-build-debug
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -100,9 +100,9 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex3/cmake-build-debug/CMakeFiles /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex3/cmake-build-debug/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /cs/usr/shulik10/OS/OS/Exercises/ex3/cmake-build-debug/CMakeFiles /cs/usr/shulik10/OS/OS/Exercises/ex3/cmake-build-debug/CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex3/cmake-build-debug/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /cs/usr/shulik10/OS/OS/Exercises/ex3/cmake-build-debug/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -143,32 +143,86 @@ ex3/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ex3.dir/build.make CMakeFiles/ex3.dir/build
 .PHONY : ex3/fast
 
-main.o: main.cpp.o
+Barrier/Barrier.o: Barrier/Barrier.cpp.o
 
-.PHONY : main.o
+.PHONY : Barrier/Barrier.o
 
 # target to build an object file
-main.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ex3.dir/build.make CMakeFiles/ex3.dir/main.cpp.o
-.PHONY : main.cpp.o
+Barrier/Barrier.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ex3.dir/build.make CMakeFiles/ex3.dir/Barrier/Barrier.cpp.o
+.PHONY : Barrier/Barrier.cpp.o
 
-main.i: main.cpp.i
+Barrier/Barrier.i: Barrier/Barrier.cpp.i
 
-.PHONY : main.i
+.PHONY : Barrier/Barrier.i
 
 # target to preprocess a source file
-main.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ex3.dir/build.make CMakeFiles/ex3.dir/main.cpp.i
-.PHONY : main.cpp.i
+Barrier/Barrier.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ex3.dir/build.make CMakeFiles/ex3.dir/Barrier/Barrier.cpp.i
+.PHONY : Barrier/Barrier.cpp.i
 
-main.s: main.cpp.s
+Barrier/Barrier.s: Barrier/Barrier.cpp.s
 
-.PHONY : main.s
+.PHONY : Barrier/Barrier.s
 
 # target to generate assembly for a file
-main.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ex3.dir/build.make CMakeFiles/ex3.dir/main.cpp.s
-.PHONY : main.cpp.s
+Barrier/Barrier.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ex3.dir/build.make CMakeFiles/ex3.dir/Barrier/Barrier.cpp.s
+.PHONY : Barrier/Barrier.cpp.s
+
+Barrier/barrierdemo.o: Barrier/barrierdemo.cpp.o
+
+.PHONY : Barrier/barrierdemo.o
+
+# target to build an object file
+Barrier/barrierdemo.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ex3.dir/build.make CMakeFiles/ex3.dir/Barrier/barrierdemo.cpp.o
+.PHONY : Barrier/barrierdemo.cpp.o
+
+Barrier/barrierdemo.i: Barrier/barrierdemo.cpp.i
+
+.PHONY : Barrier/barrierdemo.i
+
+# target to preprocess a source file
+Barrier/barrierdemo.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ex3.dir/build.make CMakeFiles/ex3.dir/Barrier/barrierdemo.cpp.i
+.PHONY : Barrier/barrierdemo.cpp.i
+
+Barrier/barrierdemo.s: Barrier/barrierdemo.cpp.s
+
+.PHONY : Barrier/barrierdemo.s
+
+# target to generate assembly for a file
+Barrier/barrierdemo.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ex3.dir/build.make CMakeFiles/ex3.dir/Barrier/barrierdemo.cpp.s
+.PHONY : Barrier/barrierdemo.cpp.s
+
+MapReduceFramework.o: MapReduceFramework.cpp.o
+
+.PHONY : MapReduceFramework.o
+
+# target to build an object file
+MapReduceFramework.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ex3.dir/build.make CMakeFiles/ex3.dir/MapReduceFramework.cpp.o
+.PHONY : MapReduceFramework.cpp.o
+
+MapReduceFramework.i: MapReduceFramework.cpp.i
+
+.PHONY : MapReduceFramework.i
+
+# target to preprocess a source file
+MapReduceFramework.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ex3.dir/build.make CMakeFiles/ex3.dir/MapReduceFramework.cpp.i
+.PHONY : MapReduceFramework.cpp.i
+
+MapReduceFramework.s: MapReduceFramework.cpp.s
+
+.PHONY : MapReduceFramework.s
+
+# target to generate assembly for a file
+MapReduceFramework.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ex3.dir/build.make CMakeFiles/ex3.dir/MapReduceFramework.cpp.s
+.PHONY : MapReduceFramework.cpp.s
 
 # Help Target
 help:
@@ -179,9 +233,15 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... ex3"
-	@echo "... main.o"
-	@echo "... main.i"
-	@echo "... main.s"
+	@echo "... Barrier/Barrier.o"
+	@echo "... Barrier/Barrier.i"
+	@echo "... Barrier/Barrier.s"
+	@echo "... Barrier/barrierdemo.o"
+	@echo "... Barrier/barrierdemo.i"
+	@echo "... Barrier/barrierdemo.s"
+	@echo "... MapReduceFramework.o"
+	@echo "... MapReduceFramework.i"
+	@echo "... MapReduceFramework.s"
 .PHONY : help
 
 

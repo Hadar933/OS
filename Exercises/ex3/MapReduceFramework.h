@@ -3,6 +3,7 @@
 
 #include "MapReduceClient.h"
 #include "atomic"
+#include <pthread.h>
 
 
 typedef void* JobHandle;

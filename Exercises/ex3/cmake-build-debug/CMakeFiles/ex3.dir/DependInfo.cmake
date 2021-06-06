@@ -4,7 +4,9 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex3/main.cpp" "/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex3/cmake-build-debug/CMakeFiles/ex3.dir/main.cpp.o"
+  "/cs/usr/shulik10/OS/OS/Exercises/ex3/Barrier/Barrier.cpp" "/cs/usr/shulik10/OS/OS/Exercises/ex3/cmake-build-debug/CMakeFiles/ex3.dir/Barrier/Barrier.cpp.o"
+  "/cs/usr/shulik10/OS/OS/Exercises/ex3/Barrier/barrierdemo.cpp" "/cs/usr/shulik10/OS/OS/Exercises/ex3/cmake-build-debug/CMakeFiles/ex3.dir/Barrier/barrierdemo.cpp.o"
+  "/cs/usr/shulik10/OS/OS/Exercises/ex3/MapReduceFramework.cpp" "/cs/usr/shulik10/OS/OS/Exercises/ex3/cmake-build-debug/CMakeFiles/ex3.dir/MapReduceFramework.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
