@@ -1,4 +1,19 @@
 /usr/local/jetbrains/clion/2020.2/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex2
 -- Configuring done
 -- Generating done
+-- Build files have been written to: /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex2/cmake-build-debug/googletest-download
+[ 11%] Performing update step for 'googletest'
+From https://github.com/google/googletest
+   f5e592d8..662fe38e  master     -> origin/master
+ + d0635c94...8c83ccae 498B35FA518A5E1CF8C95CE6D51091B2 -> origin/498B35FA518A5E1CF8C95CE6D51091B2  (forced update)
+First, rewinding head to replay your work on top of it...
+Fast-forwarded master to origin/master.
+[ 22%] No configure step for 'googletest'
+[ 33%] No build step for 'googletest'
+[ 44%] No install step for 'googletest'
+[ 55%] No test step for 'googletest'
+[ 66%] Completed 'googletest'
+[100%] Built target googletest
+-- Configuring done
+-- Generating done
 -- Build files have been written to: /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex2/cmake-build-debug

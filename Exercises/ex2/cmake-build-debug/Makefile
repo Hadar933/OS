@@ -76,16 +76,51 @@ CMAKE_BINARY_DIR = /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex2/cmake-build-debu
 #=============================================================================
 # Targets provided globally by CMake.
 
-# Special rule for the target rebuild_cache
-rebuild_cache:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
-	/usr/local/APP/jetbrains/clion/2020.2/bin/cmake/linux/bin/cmake --regenerate-during-build -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
-.PHONY : rebuild_cache
+# Special rule for the target install/strip
+install/strip: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing the project stripped..."
+	/usr/local/APP/jetbrains/clion/2020.2/bin/cmake/linux/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
+.PHONY : install/strip
 
-# Special rule for the target rebuild_cache
-rebuild_cache/fast: rebuild_cache
+# Special rule for the target install/strip
+install/strip/fast: preinstall/fast
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing the project stripped..."
+	/usr/local/APP/jetbrains/clion/2020.2/bin/cmake/linux/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
+.PHONY : install/strip/fast
 
-.PHONY : rebuild_cache/fast
+# Special rule for the target install/local
+install/local: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
+	/usr/local/APP/jetbrains/clion/2020.2/bin/cmake/linux/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
+.PHONY : install/local
+
+# Special rule for the target install/local
+install/local/fast: preinstall/fast
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
+	/usr/local/APP/jetbrains/clion/2020.2/bin/cmake/linux/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
+.PHONY : install/local/fast
+
+# Special rule for the target install
+install: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Install the project..."
+	/usr/local/APP/jetbrains/clion/2020.2/bin/cmake/linux/bin/cmake -P cmake_install.cmake
+.PHONY : install
+
+# Special rule for the target install
+install/fast: preinstall/fast
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Install the project..."
+	/usr/local/APP/jetbrains/clion/2020.2/bin/cmake/linux/bin/cmake -P cmake_install.cmake
+.PHONY : install/fast
+
+# Special rule for the target list_install_components
+list_install_components:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Available install components are: \"Unspecified\""
+.PHONY : list_install_components
+
+# Special rule for the target list_install_components
+list_install_components/fast: list_install_components
+
+.PHONY : list_install_components/fast
 
 # Special rule for the target edit_cache
 edit_cache:
@@ -97,6 +132,17 @@ edit_cache:
 edit_cache/fast: edit_cache
 
 .PHONY : edit_cache/fast
+
+# Special rule for the target rebuild_cache
+rebuild_cache:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
+	/usr/local/APP/jetbrains/clion/2020.2/bin/cmake/linux/bin/cmake --regenerate-during-build -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+.PHONY : rebuild_cache
+
+# Special rule for the target rebuild_cache
+rebuild_cache/fast: rebuild_cache
+
+.PHONY : rebuild_cache/fast
 
 # The main all target
 all: cmake_check_build_system
@@ -131,17 +177,123 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named ex2
+# Target rules for targets named theTests
 
 # Build rule for target.
-ex2: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 ex2
-.PHONY : ex2
+theTests: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 theTests
+.PHONY : theTests
 
 # fast build rule for target.
-ex2/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ex2.dir/build.make CMakeFiles/ex2.dir/build
-.PHONY : ex2/fast
+theTests/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/theTests.dir/build.make CMakeFiles/theTests.dir/build
+.PHONY : theTests/fast
+
+#=============================================================================
+# Target rules for targets named gmock_main
+
+# Build rule for target.
+gmock_main: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 gmock_main
+.PHONY : gmock_main
+
+# fast build rule for target.
+gmock_main/fast:
+	$(MAKE) $(MAKESILENT) -f googletest-build/googlemock/CMakeFiles/gmock_main.dir/build.make googletest-build/googlemock/CMakeFiles/gmock_main.dir/build
+.PHONY : gmock_main/fast
+
+#=============================================================================
+# Target rules for targets named gmock
+
+# Build rule for target.
+gmock: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 gmock
+.PHONY : gmock
+
+# fast build rule for target.
+gmock/fast:
+	$(MAKE) $(MAKESILENT) -f googletest-build/googlemock/CMakeFiles/gmock.dir/build.make googletest-build/googlemock/CMakeFiles/gmock.dir/build
+.PHONY : gmock/fast
+
+#=============================================================================
+# Target rules for targets named gtest_main
+
+# Build rule for target.
+gtest_main: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 gtest_main
+.PHONY : gtest_main
+
+# fast build rule for target.
+gtest_main/fast:
+	$(MAKE) $(MAKESILENT) -f googletest-build/googletest/CMakeFiles/gtest_main.dir/build.make googletest-build/googletest/CMakeFiles/gtest_main.dir/build
+.PHONY : gtest_main/fast
+
+#=============================================================================
+# Target rules for targets named gtest
+
+# Build rule for target.
+gtest: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 gtest
+.PHONY : gtest
+
+# fast build rule for target.
+gtest/fast:
+	$(MAKE) $(MAKESILENT) -f googletest-build/googletest/CMakeFiles/gtest.dir/build.make googletest-build/googletest/CMakeFiles/gtest.dir/build
+.PHONY : gtest/fast
+
+Thread.o: Thread.cpp.o
+
+.PHONY : Thread.o
+
+# target to build an object file
+Thread.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/theTests.dir/build.make CMakeFiles/theTests.dir/Thread.cpp.o
+.PHONY : Thread.cpp.o
+
+Thread.i: Thread.cpp.i
+
+.PHONY : Thread.i
+
+# target to preprocess a source file
+Thread.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/theTests.dir/build.make CMakeFiles/theTests.dir/Thread.cpp.i
+.PHONY : Thread.cpp.i
+
+Thread.s: Thread.cpp.s
+
+.PHONY : Thread.s
+
+# target to generate assembly for a file
+Thread.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/theTests.dir/build.make CMakeFiles/theTests.dir/Thread.cpp.s
+.PHONY : Thread.cpp.s
+
+tests_to_be_ran_separately.o: tests_to_be_ran_separately.cpp.o
+
+.PHONY : tests_to_be_ran_separately.o
+
+# target to build an object file
+tests_to_be_ran_separately.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/theTests.dir/build.make CMakeFiles/theTests.dir/tests_to_be_ran_separately.cpp.o
+.PHONY : tests_to_be_ran_separately.cpp.o
+
+tests_to_be_ran_separately.i: tests_to_be_ran_separately.cpp.i
+
+.PHONY : tests_to_be_ran_separately.i
+
+# target to preprocess a source file
+tests_to_be_ran_separately.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/theTests.dir/build.make CMakeFiles/theTests.dir/tests_to_be_ran_separately.cpp.i
+.PHONY : tests_to_be_ran_separately.cpp.i
+
+tests_to_be_ran_separately.s: tests_to_be_ran_separately.cpp.s
+
+.PHONY : tests_to_be_ran_separately.s
+
+# target to generate assembly for a file
+tests_to_be_ran_separately.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/theTests.dir/build.make CMakeFiles/theTests.dir/tests_to_be_ran_separately.cpp.s
+.PHONY : tests_to_be_ran_separately.cpp.s
 
 uthreads.o: uthreads.cpp.o
 
@@ -149,7 +301,7 @@ uthreads.o: uthreads.cpp.o
 
 # target to build an object file
 uthreads.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ex2.dir/build.make CMakeFiles/ex2.dir/uthreads.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/theTests.dir/build.make CMakeFiles/theTests.dir/uthreads.cpp.o
 .PHONY : uthreads.cpp.o
 
 uthreads.i: uthreads.cpp.i
@@ -158,7 +310,7 @@ uthreads.i: uthreads.cpp.i
 
 # target to preprocess a source file
 uthreads.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ex2.dir/build.make CMakeFiles/ex2.dir/uthreads.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/theTests.dir/build.make CMakeFiles/theTests.dir/uthreads.cpp.i
 .PHONY : uthreads.cpp.i
 
 uthreads.s: uthreads.cpp.s
@@ -167,7 +319,7 @@ uthreads.s: uthreads.cpp.s
 
 # target to generate assembly for a file
 uthreads.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ex2.dir/build.make CMakeFiles/ex2.dir/uthreads.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/theTests.dir/build.make CMakeFiles/theTests.dir/uthreads.cpp.s
 .PHONY : uthreads.cpp.s
 
 # Help Target
@@ -177,8 +329,22 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... edit_cache"
+	@echo "... install"
+	@echo "... install/local"
+	@echo "... install/strip"
+	@echo "... list_install_components"
 	@echo "... rebuild_cache"
-	@echo "... ex2"
+	@echo "... gmock"
+	@echo "... gmock_main"
+	@echo "... gtest"
+	@echo "... gtest_main"
+	@echo "... theTests"
+	@echo "... Thread.o"
+	@echo "... Thread.i"
+	@echo "... Thread.s"
+	@echo "... tests_to_be_ran_separately.o"
+	@echo "... tests_to_be_ran_separately.i"
+	@echo "... tests_to_be_ran_separately.s"
 	@echo "... uthreads.o"
 	@echo "... uthreads.i"
 	@echo "... uthreads.s"

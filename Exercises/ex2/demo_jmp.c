@@ -46,15 +46,15 @@ typedef unsigned int address_t;
 
 /* A translation is required when using an address of a variable.
    Use this as a black box in your code. */
-address_t translate_address(address_t addr)
-{
-    address_t ret;
-    asm volatile("xor    %%gs:0x18,%0\n"
-		"rol    $0x9,%0\n"
-                 : "=g" (ret)
-                 : "0" (addr));
-    return ret;
-}
+//address_t translate_address(address_t addr)
+//{
+//    address_t ret;
+//    asm volatile("xor    %%gs:0x18,%0\n"
+//		"rol    $0x9,%0\n"
+//                 : "=g" (ret)
+//                 : "0" (addr));
+//    return ret;
+//}
 
 #endif
 
@@ -118,10 +118,10 @@ void setup(void)
   sigemptyset(&env[1]->__saved_mask);         
 }
 
-int main(void)
-{
-  setup();		
-  siglongjmp(env[0], 1);
-  return 0;
-}
+//int main(void)
+//{
+//  setup();
+//  siglongjmp(env[0], 1);
+//  return 0;
+//}
 

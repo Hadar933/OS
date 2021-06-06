@@ -1,1 +1,1 @@
-/usr/bin/c++  -g   CMakeFiles/ex2.dir/uthreads.cpp.o  -o ex2 
+/usr/bin/c++  -g   CMakeFiles/ex2.dir/uthreads.cpp.o CMakeFiles/ex2.dir/demo_itimer.c.o CMakeFiles/ex2.dir/demo_jmp.c.o CMakeFiles/ex2.dir/demo_singInt_handler.c.o CMakeFiles/ex2.dir/Thread.cpp.o  -o ex2 

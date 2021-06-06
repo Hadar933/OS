@@ -82,6 +82,21 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex2/Thread.cpp">
+			<Option target="ex2"/>
+		</Unit>
+		<Unit filename="/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex2/Thread.h">
+			<Option target="ex2"/>
+		</Unit>
+		<Unit filename="/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex2/demo_itimer.c">
+			<Option target="ex2"/>
+		</Unit>
+		<Unit filename="/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex2/demo_jmp.c">
+			<Option target="ex2"/>
+		</Unit>
+		<Unit filename="/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex2/demo_singInt_handler.c">
+			<Option target="ex2"/>
+		</Unit>
 		<Unit filename="/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex2/uthreads.cpp">
 			<Option target="ex2"/>
 		</Unit>

@@ -2,7 +2,11 @@
 <project version="4">
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
     <generated>
-      <config projectName="ex2" targetName="ex2" />
+      <config projectName="testers" targetName="gmock" />
+      <config projectName="testers" targetName="gtest_main" />
+      <config projectName="testers" targetName="theTests" />
+      <config projectName="testers" targetName="gtest" />
+      <config projectName="testers" targetName="gmock_main" />
     </generated>
   </component>
   <component name="CMakeSettings">
@@ -12,9 +16,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0d43ed8d-ce6b-4e73-b863-b374b71ef0bf" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/ex2.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/ex2.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Thread.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Thread.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/theTests.dir/CXX.includecache" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/theTests.dir/CXX.includecache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/theTests.dir/Thread.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/theTests.dir/Thread.cpp.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/theTests.dir/uthreads.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/theTests.dir/uthreads.cpp.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/googletest-src" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/googletest-src" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/theTests" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/theTests" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/uthreads.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/uthreads.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -24,28 +33,104 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectId" id="1sLlkTl8Zz17gxCIP6Vni4VyYJY" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
-    <option name="showExcludedFiles" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="cf.advertisement.text.has.clang-format" value="true" />
+    <property name="cf.first.check.clang-format" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/.." />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
   </component>
-  <component name="RunManager">
-    <configuration name="ex2" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ex2" TARGET_NAME="ex2" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="ex2" RUN_TARGET_NAME="ex2">
+  <component name="RunManager" selected="Google Test.Test16.MutexTest10">
+    <configuration name="Test12.MutexTest6" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" temporary="true" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="testers" TARGET_NAME="theTests" RUN_TARGET_PROJECT_NAME="testers" RUN_TARGET_NAME="theTests" TEST_CLASS="Test12" TEST_METHOD="MutexTest6" TEST_MODE="SUITE_TEST">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+        <option name="BeforeTestRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Test13.MutexTest7" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" temporary="true" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="testers" TARGET_NAME="theTests" RUN_TARGET_PROJECT_NAME="testers" RUN_TARGET_NAME="theTests" TEST_CLASS="Test13" TEST_METHOD="MutexTest7" TEST_MODE="SUITE_TEST">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+        <option name="BeforeTestRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Test14.MutexTest8" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" temporary="true" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="testers" TARGET_NAME="theTests" RUN_TARGET_PROJECT_NAME="testers" RUN_TARGET_NAME="theTests" TEST_CLASS="Test14" TEST_METHOD="MutexTest8" TEST_MODE="SUITE_TEST">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+        <option name="BeforeTestRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Test15.MutexTest9" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" temporary="true" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="testers" TARGET_NAME="theTests" RUN_TARGET_PROJECT_NAME="testers" RUN_TARGET_NAME="theTests" TEST_CLASS="Test15" TEST_METHOD="MutexTest9" TEST_MODE="SUITE_TEST">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+        <option name="BeforeTestRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Test16.MutexTest10" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" temporary="true" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="testers" TARGET_NAME="theTests" RUN_TARGET_PROJECT_NAME="testers" RUN_TARGET_NAME="theTests" TEST_CLASS="Test16" TEST_METHOD="MutexTest10" TEST_MODE="SUITE_TEST">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+        <option name="BeforeTestRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="gmock" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="testers" TARGET_NAME="gmock" CONFIG_NAME="Debug">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
+    <configuration name="gmock_main" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="testers" TARGET_NAME="gmock_main" CONFIG_NAME="Debug">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="gtest" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="testers" TARGET_NAME="gtest" CONFIG_NAME="Debug">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="gtest_main" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="testers" TARGET_NAME="gtest_main" CONFIG_NAME="Debug">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Google Test.Test12.MutexTest6" />
+      <item itemvalue="Google Test.Test13.MutexTest7" />
+      <item itemvalue="Google Test.Test14.MutexTest8" />
+      <item itemvalue="Google Test.Test15.MutexTest9" />
+      <item itemvalue="Google Test.Test16.MutexTest10" />
+      <item itemvalue="CMake Application.gmock" />
+      <item itemvalue="CMake Application.gmock_main" />
+      <item itemvalue="CMake Application.gtest" />
+      <item itemvalue="CMake Application.gtest_main" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Google Test.Test16.MutexTest10" />
+        <item itemvalue="Google Test.Test15.MutexTest9" />
+        <item itemvalue="Google Test.Test14.MutexTest8" />
+        <item itemvalue="Google Test.Test13.MutexTest7" />
+        <item itemvalue="Google Test.Test12.MutexTest6" />
+      </list>
+    </recent_temporary>
   </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -57,13 +142,85 @@
       <option name="presentableId" value="Default" />
       <updated>1620659893541</updated>
       <workItem from="1620659895123" duration="45000" />
+      <workItem from="1620660674888" duration="79000" />
+      <workItem from="1620660793567" duration="6976000" />
+      <workItem from="1620749175891" duration="3164000" />
+      <workItem from="1620754408330" duration="2271000" />
+      <workItem from="1620757522368" duration="4875000" />
+      <workItem from="1620810688381" duration="2009000" />
+      <workItem from="1620827416853" duration="14715000" />
+      <workItem from="1620847530696" duration="1643000" />
+      <workItem from="1620890845308" duration="15929000" />
+      <workItem from="1620910697046" duration="6543000" />
+      <workItem from="1620920828999" duration="14839000" />
+      <workItem from="1620978851401" duration="13235000" />
+      <workItem from="1622980064461" duration="106000" />
+      <workItem from="1622980812280" duration="48000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="1" />
+    <option name="version" value="3" />
   </component>
   <component name="WindowStateProjectService">
+    <state x="669" y="345" width="574" height="390" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1620891450527">
+      <screen x="0" y="26" width="1920" height="1030" />
+    </state>
+    <state x="669" y="345" width="574" height="390" key="#com.intellij.fileTypes.FileTypeChooser/0.26.1920.1030@0.26.1920.1030" timestamp="1620891450527" />
+    <state x="768" y="260" width="376" height="559" key="#com.intellij.ide.util.MemberChooser" timestamp="1620898705659">
+      <screen x="0" y="26" width="1920" height="1030" />
+    </state>
+    <state x="768" y="260" width="376" height="559" key="#com.intellij.ide.util.MemberChooser/0.26.1920.1030@0.26.1920.1030" timestamp="1620898705659" />
+    <state x="768" y="261" width="376" height="560" key="#com.intellij.ide.util.MemberChooser/0.27.1920.1029@0.27.1920.1029" timestamp="1620756810119" />
+    <state x="718" y="287" key="#xdebugger.evaluate" timestamp="1620907100494">
+      <screen x="0" y="26" width="1920" height="1030" />
+    </state>
+    <state x="718" y="287" key="#xdebugger.evaluate/0.26.1920.1030@0.26.1920.1030" timestamp="1620907100494" />
+    <state width="558" height="485" key="DebuggerActiveHint" timestamp="1620990941317">
+      <screen x="0" y="26" width="1920" height="1030" />
+    </state>
+    <state width="558" height="485" key="DebuggerActiveHint/0.26.1920.1030@0.26.1920.1030" timestamp="1620990941317" />
+    <state x="739" y="284" width="426" height="509" key="FileChooserDialogImpl" timestamp="1622980834054">
+      <screen x="0" y="26" width="1920" height="1030" />
+    </state>
+    <state x="739" y="284" width="426" height="509" key="FileChooserDialogImpl/0.26.1920.1030@0.26.1920.1030" timestamp="1622980834054" />
+    <state x="739" y="285" width="426" height="510" key="FileChooserDialogImpl/0.27.1920.1029@0.27.1920.1029" timestamp="1620755662437" />
+    <state width="1876" height="160" key="GridCell.Tab.0.bottom" timestamp="1620995102201">
+      <screen x="0" y="26" width="1920" height="1030" />
+    </state>
+    <state width="1876" height="160" key="GridCell.Tab.0.bottom/0.26.1920.1030@0.26.1920.1030" timestamp="1620995102201" />
+    <state width="1876" height="160" key="GridCell.Tab.0.center" timestamp="1620995102201">
+      <screen x="0" y="26" width="1920" height="1030" />
+    </state>
+    <state width="1876" height="160" key="GridCell.Tab.0.center/0.26.1920.1030@0.26.1920.1030" timestamp="1620995102201" />
+    <state width="1876" height="160" key="GridCell.Tab.0.left" timestamp="1620995102201">
+      <screen x="0" y="26" width="1920" height="1030" />
+    </state>
+    <state width="1876" height="160" key="GridCell.Tab.0.left/0.26.1920.1030@0.26.1920.1030" timestamp="1620995102201" />
+    <state width="1876" height="160" key="GridCell.Tab.0.right" timestamp="1620995102201">
+      <screen x="0" y="26" width="1920" height="1030" />
+    </state>
+    <state width="1876" height="160" key="GridCell.Tab.0.right/0.26.1920.1030@0.26.1920.1030" timestamp="1620995102201" />
+    <state width="1876" height="2" key="GridCell.Tab.1.bottom" timestamp="1620991182823">
+      <screen x="0" y="26" width="1920" height="1030" />
+    </state>
+    <state width="1876" height="2" key="GridCell.Tab.1.bottom/0.26.1920.1030@0.26.1920.1030" timestamp="1620991182823" />
+    <state width="1876" height="2" key="GridCell.Tab.1.center" timestamp="1620991182823">
+      <screen x="0" y="26" width="1920" height="1030" />
+    </state>
+    <state width="1876" height="2" key="GridCell.Tab.1.center/0.26.1920.1030@0.26.1920.1030" timestamp="1620991182823" />
+    <state width="1876" height="2" key="GridCell.Tab.1.left" timestamp="1620991182823">
+      <screen x="0" y="26" width="1920" height="1030" />
+    </state>
+    <state width="1876" height="2" key="GridCell.Tab.1.left/0.26.1920.1030@0.26.1920.1030" timestamp="1620991182823" />
+    <state width="1876" height="2" key="GridCell.Tab.1.right" timestamp="1620991182823">
+      <screen x="0" y="26" width="1920" height="1030" />
+    </state>
+    <state width="1876" height="2" key="GridCell.Tab.1.right/0.26.1920.1030@0.26.1920.1030" timestamp="1620991182823" />
+    <state x="456" y="176" key="SettingsEditor" timestamp="1620667819023">
+      <screen x="0" y="26" width="1920" height="1030" />
+    </state>
+    <state x="456" y="176" key="SettingsEditor/0.26.1920.1030@0.26.1920.1030" timestamp="1620667819023" />
     <state x="477" y="240" key="com.intellij.ide.util.TipDialog" timestamp="1620659961751">
       <screen x="0" y="0" width="1536" height="824" />
     </state>

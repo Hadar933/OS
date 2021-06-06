@@ -90,17 +90,77 @@ CMakeFiles/ex2.dir/uthreads.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/ex2.dir/uthreads.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex2/uthreads.cpp -o CMakeFiles/ex2.dir/uthreads.cpp.s
 
+CMakeFiles/ex2.dir/demo_itimer.c.o: CMakeFiles/ex2.dir/flags.make
+CMakeFiles/ex2.dir/demo_itimer.c.o: ../demo_itimer.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex2/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object CMakeFiles/ex2.dir/demo_itimer.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/ex2.dir/demo_itimer.c.o   -c /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex2/demo_itimer.c
+
+CMakeFiles/ex2.dir/demo_itimer.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/ex2.dir/demo_itimer.c.i"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex2/demo_itimer.c > CMakeFiles/ex2.dir/demo_itimer.c.i
+
+CMakeFiles/ex2.dir/demo_itimer.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/ex2.dir/demo_itimer.c.s"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex2/demo_itimer.c -o CMakeFiles/ex2.dir/demo_itimer.c.s
+
+CMakeFiles/ex2.dir/demo_jmp.c.o: CMakeFiles/ex2.dir/flags.make
+CMakeFiles/ex2.dir/demo_jmp.c.o: ../demo_jmp.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex2/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building C object CMakeFiles/ex2.dir/demo_jmp.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/ex2.dir/demo_jmp.c.o   -c /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex2/demo_jmp.c
+
+CMakeFiles/ex2.dir/demo_jmp.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/ex2.dir/demo_jmp.c.i"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex2/demo_jmp.c > CMakeFiles/ex2.dir/demo_jmp.c.i
+
+CMakeFiles/ex2.dir/demo_jmp.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/ex2.dir/demo_jmp.c.s"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex2/demo_jmp.c -o CMakeFiles/ex2.dir/demo_jmp.c.s
+
+CMakeFiles/ex2.dir/demo_singInt_handler.c.o: CMakeFiles/ex2.dir/flags.make
+CMakeFiles/ex2.dir/demo_singInt_handler.c.o: ../demo_singInt_handler.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex2/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building C object CMakeFiles/ex2.dir/demo_singInt_handler.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/ex2.dir/demo_singInt_handler.c.o   -c /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex2/demo_singInt_handler.c
+
+CMakeFiles/ex2.dir/demo_singInt_handler.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/ex2.dir/demo_singInt_handler.c.i"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex2/demo_singInt_handler.c > CMakeFiles/ex2.dir/demo_singInt_handler.c.i
+
+CMakeFiles/ex2.dir/demo_singInt_handler.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/ex2.dir/demo_singInt_handler.c.s"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex2/demo_singInt_handler.c -o CMakeFiles/ex2.dir/demo_singInt_handler.c.s
+
+CMakeFiles/ex2.dir/Thread.cpp.o: CMakeFiles/ex2.dir/flags.make
+CMakeFiles/ex2.dir/Thread.cpp.o: ../Thread.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex2/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/ex2.dir/Thread.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/ex2.dir/Thread.cpp.o -c /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex2/Thread.cpp
+
+CMakeFiles/ex2.dir/Thread.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/ex2.dir/Thread.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex2/Thread.cpp > CMakeFiles/ex2.dir/Thread.cpp.i
+
+CMakeFiles/ex2.dir/Thread.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/ex2.dir/Thread.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex2/Thread.cpp -o CMakeFiles/ex2.dir/Thread.cpp.s
+
 # Object files for target ex2
 ex2_OBJECTS = \
-"CMakeFiles/ex2.dir/uthreads.cpp.o"
+"CMakeFiles/ex2.dir/uthreads.cpp.o" \
+"CMakeFiles/ex2.dir/demo_itimer.c.o" \
+"CMakeFiles/ex2.dir/demo_jmp.c.o" \
+"CMakeFiles/ex2.dir/demo_singInt_handler.c.o" \
+"CMakeFiles/ex2.dir/Thread.cpp.o"
 
 # External object files for target ex2
 ex2_EXTERNAL_OBJECTS =
 
 ex2: CMakeFiles/ex2.dir/uthreads.cpp.o
+ex2: CMakeFiles/ex2.dir/demo_itimer.c.o
+ex2: CMakeFiles/ex2.dir/demo_jmp.c.o
+ex2: CMakeFiles/ex2.dir/demo_singInt_handler.c.o
+ex2: CMakeFiles/ex2.dir/Thread.cpp.o
 ex2: CMakeFiles/ex2.dir/build.make
 ex2: CMakeFiles/ex2.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex2/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable ex2"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex2/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Linking CXX executable ex2"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/ex2.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
