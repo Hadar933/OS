@@ -68,10 +68,10 @@ RM = /usr/local/APP/jetbrains/clion/2020.2/bin/cmake/linux/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /cs/usr/shulik10/OS/OS/Exercises/ex3
+CMAKE_SOURCE_DIR = /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex3
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /cs/usr/shulik10/OS/OS/Exercises/ex3/cmake-build-debug
+CMAKE_BINARY_DIR = /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex3/cmake-build-debug
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -100,9 +100,9 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /cs/usr/shulik10/OS/OS/Exercises/ex3/cmake-build-debug/CMakeFiles /cs/usr/shulik10/OS/OS/Exercises/ex3/cmake-build-debug/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex3/cmake-build-debug/CMakeFiles /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex3/cmake-build-debug/CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /cs/usr/shulik10/OS/OS/Exercises/ex3/cmake-build-debug/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex3/cmake-build-debug/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -142,6 +142,60 @@ ex3: cmake_check_build_system
 ex3/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ex3.dir/build.make CMakeFiles/ex3.dir/build
 .PHONY : ex3/fast
+
+Atomic/atomicdemo.o: Atomic/atomicdemo.cpp.o
+
+.PHONY : Atomic/atomicdemo.o
+
+# target to build an object file
+Atomic/atomicdemo.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ex3.dir/build.make CMakeFiles/ex3.dir/Atomic/atomicdemo.cpp.o
+.PHONY : Atomic/atomicdemo.cpp.o
+
+Atomic/atomicdemo.i: Atomic/atomicdemo.cpp.i
+
+.PHONY : Atomic/atomicdemo.i
+
+# target to preprocess a source file
+Atomic/atomicdemo.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ex3.dir/build.make CMakeFiles/ex3.dir/Atomic/atomicdemo.cpp.i
+.PHONY : Atomic/atomicdemo.cpp.i
+
+Atomic/atomicdemo.s: Atomic/atomicdemo.cpp.s
+
+.PHONY : Atomic/atomicdemo.s
+
+# target to generate assembly for a file
+Atomic/atomicdemo.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ex3.dir/build.make CMakeFiles/ex3.dir/Atomic/atomicdemo.cpp.s
+.PHONY : Atomic/atomicdemo.cpp.s
+
+Atomic/atomicdemo_multivar.o: Atomic/atomicdemo_multivar.cpp.o
+
+.PHONY : Atomic/atomicdemo_multivar.o
+
+# target to build an object file
+Atomic/atomicdemo_multivar.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ex3.dir/build.make CMakeFiles/ex3.dir/Atomic/atomicdemo_multivar.cpp.o
+.PHONY : Atomic/atomicdemo_multivar.cpp.o
+
+Atomic/atomicdemo_multivar.i: Atomic/atomicdemo_multivar.cpp.i
+
+.PHONY : Atomic/atomicdemo_multivar.i
+
+# target to preprocess a source file
+Atomic/atomicdemo_multivar.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ex3.dir/build.make CMakeFiles/ex3.dir/Atomic/atomicdemo_multivar.cpp.i
+.PHONY : Atomic/atomicdemo_multivar.cpp.i
+
+Atomic/atomicdemo_multivar.s: Atomic/atomicdemo_multivar.cpp.s
+
+.PHONY : Atomic/atomicdemo_multivar.s
+
+# target to generate assembly for a file
+Atomic/atomicdemo_multivar.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ex3.dir/build.make CMakeFiles/ex3.dir/Atomic/atomicdemo_multivar.cpp.s
+.PHONY : Atomic/atomicdemo_multivar.cpp.s
 
 Barrier/Barrier.o: Barrier/Barrier.cpp.o
 
@@ -233,6 +287,12 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... ex3"
+	@echo "... Atomic/atomicdemo.o"
+	@echo "... Atomic/atomicdemo.i"
+	@echo "... Atomic/atomicdemo.s"
+	@echo "... Atomic/atomicdemo_multivar.o"
+	@echo "... Atomic/atomicdemo_multivar.i"
+	@echo "... Atomic/atomicdemo_multivar.s"
 	@echo "... Barrier/Barrier.o"
 	@echo "... Barrier/Barrier.i"
 	@echo "... Barrier/Barrier.s"

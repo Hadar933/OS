@@ -3,4 +3,4 @@ project(ex3)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(ex3 MapReduceFramework.h MapReduceClient.h MapReduceFramework.cpp Barrier/Barrier.cpp Barrier/barrierdemo.cpp)
+add_executable(ex3 MapReduceFramework.h MapReduceClient.h MapReduceFramework.cpp Barrier/Barrier.cpp Barrier/barrierdemo.cpp Atomic/atomicdemo.cpp Atomic/atomicdemo_multivar.cpp)
