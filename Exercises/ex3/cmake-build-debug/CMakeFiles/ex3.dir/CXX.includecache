@@ -6,59 +6,35 @@
 
 #IncludeRegexTransform: 
 
-/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex3/Atomic/atomicdemo.cpp
-pthread.h
--
-cstdio
--
-atomic
--
-
-/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex3/Atomic/atomicdemo_multivar.cpp
-pthread.h
--
-cstdio
--
-atomic
--
-
-/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex3/Barrier/Barrier.cpp
-Barrier.h
-/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex3/Barrier/Barrier.h
-cstdlib
--
-cstdio
--
-
-/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex3/Barrier/Barrier.h
+/cs/usr/shulik10/OS/OS/Exercises/ex3/Barrier/Barrier.h
 pthread.h
 -
 
-/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex3/Barrier/barrierdemo.cpp
-Barrier.h
-/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex3/Barrier/Barrier.h
-pthread.h
--
-cstdio
--
-
-/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex3/MapReduceClient.h
+/cs/usr/shulik10/OS/OS/Exercises/ex3/MapReduceClient.h
 vector
 -
 utility
 -
 
-/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex3/MapReduceFramework.cpp
+/cs/usr/shulik10/OS/OS/Exercises/ex3/MapReduceFramework.cpp
 MapReduceFramework.h
-/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex3/MapReduceFramework.h
+/cs/usr/shulik10/OS/OS/Exercises/ex3/MapReduceFramework.h
 vector
 -
+map
+-
+algorithm
+-
+Barrier/Barrier.h
+/cs/usr/shulik10/OS/OS/Exercises/ex3/Barrier/Barrier.h
+pthread.h
+-
 
-/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex3/MapReduceFramework.h
+/cs/usr/shulik10/OS/OS/Exercises/ex3/MapReduceFramework.h
 MapReduceClient.h
-/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex3/MapReduceClient.h
+/cs/usr/shulik10/OS/OS/Exercises/ex3/MapReduceClient.h
 atomic
-/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex3/atomic
+/cs/usr/shulik10/OS/OS/Exercises/ex3/atomic
 pthread.h
 -
 

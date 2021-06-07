@@ -6,6 +6,7 @@
 #include <map>
 #include <algorithm>
 #include "Barrier/Barrier.h"
+#include <pthread.h>
 //typedef std::vector<> vector;
 
 
@@ -19,37 +20,46 @@ typedef struct{
     pthread_t zero_thread;
     std::vector<IntermediateVec> inter_vec_vec;
     std::atomic<uint64_t> inter_vec_atomic_count;
-    std::atomic<uint64_t> atomic_counter; //TODO: is this initialised to zero?
+    std::atomic<uint64_t>* atomic_counter; //TODO: is this initialised to zero?
 
 }JobContext;
 
 
 
-
+/**
+ *
+ * @param job
+ * @param state
+ */
 void getJobState(JobHandle job, JobState* state){
     auto jc = (JobContext*)job;
     jc->j_state.percentage = state->percentage;
     jc->j_state.stage = state->stage;
 }
+
+/**
+ *
+ * @param arg
+ * @return
+ */
 void* thread_cycle(void *arg){
 
     // MAP PHASE //
     auto *jc = (JobContext*) arg;
     JobState new_js = {MAP_STAGE,0};
     getJobState(jc,&new_js);
-    int old_value = 0;
+//    int old_value = 0;
     int input_size = jc->input_vec.size();
-    while(old_value<= input_size){
-        jc->barrier->barrier(); // locks mutex
-        old_value = jc->atomic_counter++;
+    for (int i = 0; i < input_size; ++i){
+        //TODO: bug achusharmuta find tomorrow morning
+        int old_value = (*(jc->atomic_counter))++;
         InputPair pair = jc->input_vec[old_value];
         jc->client->map(pair.first,pair.second,arg);
-        jc->j_state.percentage = 100*  old_value/input_size;
-        jc->barrier->barrier(); // unlocks mutex
+        jc->j_state.percentage = 100 * old_value/input_size;
+
     }
 
     // SORT PHASE //
-    jc->barrier->barrier();
     IntermediateVec curr_vec = jc->id_to_vec_map[pthread_self()];
     std::sort(curr_vec.begin(),curr_vec.end()); // sorting according to K2 (first)
     jc->barrier->barrier();
@@ -57,11 +67,15 @@ void* thread_cycle(void *arg){
     // SHUFFLE PHASE //
     if (pthread_self()==jc->zero_thread){ // only the 0th thread shuffles.
         IntermediateVec new_vec;
-        for (std::pair<pthread_t, IntermediateVec> elem: jc->id_to_vec_map){
-            IntermediateVec v = elem.second;
-            new_vec.push_back(v.pop_back());
+        for (auto & it : jc->id_to_vec_map){
+            IntermediateVec v = it.second;
+//            IntermediatePair p = v.pop_back();
+
+
+
         }
     }
+    jc->barrier->barrier();
 
     // REDUCE PHASE //
 
@@ -105,8 +119,6 @@ void emit2 (K2* key, V2* value, void* context){
     }
     jc->id_to_vec_map[tid].push_back(IntermediatePair(key,value));  // adding the pair to the needed vector
     jc->inter_vec_atomic_count ++;
-    jc->barrier->barrier(); // unlocks mutex
-
 }
 void emit3 (K3* key, V3* value, void* context){
 
