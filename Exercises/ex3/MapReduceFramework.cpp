@@ -4,6 +4,7 @@
 #include "MapReduceFramework.h"
 #include <vector>
 #include <map>
+#include <algorithm>
 #include "Barrier/Barrier.h"
 //typedef std::vector<> vector;
 
@@ -15,15 +16,15 @@ typedef struct{
     const InputVec input_vec;
     OutputVec out_vec;
     Barrier *barrier;
-    int inter_vec_count;
-    std::vector<IntermediateVec> queue;
-    std::atomic<uint64_t> atomic_counter; //TODO: is this intialized to zero?
+    pthread_t zero_thread;
+    std::vector<IntermediateVec> inter_vec_vec;
+    std::atomic<uint64_t> inter_vec_atomic_count;
+    std::atomic<uint64_t> atomic_counter; //TODO: is this initialised to zero?
 
 }JobContext;
 
 
 
-//#################  Map Phase #################//
 
 void getJobState(JobHandle job, JobState* state){
     auto jc = (JobContext*)job;
@@ -31,6 +32,8 @@ void getJobState(JobHandle job, JobState* state){
     jc->j_state.stage = state->stage;
 }
 void* thread_cycle(void *arg){
+
+    // MAP PHASE //
     auto *jc = (JobContext*) arg;
     JobState new_js = {MAP_STAGE,0};
     getJobState(jc,&new_js);
@@ -41,9 +44,29 @@ void* thread_cycle(void *arg){
         old_value = jc->atomic_counter++;
         InputPair pair = jc->input_vec[old_value];
         jc->client->map(pair.first,pair.second,arg);
-        jc->j_state.percentage = old_value/input_size;
+        jc->j_state.percentage = 100*  old_value/input_size;
         jc->barrier->barrier(); // unlocks mutex
     }
+
+    // SORT PHASE //
+    jc->barrier->barrier();
+    IntermediateVec curr_vec = jc->id_to_vec_map[pthread_self()];
+    std::sort(curr_vec.begin(),curr_vec.end()); // sorting according to K2 (first)
+    jc->barrier->barrier();
+
+    // SHUFFLE PHASE //
+    if (pthread_self()==jc->zero_thread){ // only the 0th thread shuffles.
+        IntermediateVec new_vec;
+        for (std::pair<pthread_t, IntermediateVec> elem: jc->id_to_vec_map){
+            IntermediateVec v = elem.second;
+            new_vec.push_back(v.pop_back());
+        }
+    }
+
+    // REDUCE PHASE //
+
+
+
     return nullptr;
 }
 JobHandle
@@ -56,11 +79,13 @@ startMapReduceJob(const MapReduceClient &client, const InputVec &inputVec, Outpu
                          .input_vec = inputVec,
                          .out_vec = outputVec,
                          .barrier = new Barrier(multiThreadLevel),
-                         .inter_vec_count = 0
                          };
 
     for (int i = 0; i < multiThreadLevel; ++i) {
-        pthread_create(threads + i, nullptr, thread_cycle, &job_c);
+        pthread_create(threads + i, nullptr, thread_cycle, &job_c); // TODO handle success or fail return values
+        if (i==0){
+            job_c.zero_thread = pthread_self(); // distinguishing the first thread, which will do SHUFFLE
+        }
     }
 
     for (int i = 0; i < multiThreadLevel; ++i) { // wait for all threads to finish their cycle
@@ -79,10 +104,8 @@ void emit2 (K2* key, V2* value, void* context){
         jc->id_to_vec_map[tid] = *inter_vec;
     }
     jc->id_to_vec_map[tid].push_back(IntermediatePair(key,value));  // adding the pair to the needed vector
-
-
+    jc->inter_vec_atomic_count ++;
     jc->barrier->barrier(); // unlocks mutex
-
 
 }
 void emit3 (K3* key, V3* value, void* context){
