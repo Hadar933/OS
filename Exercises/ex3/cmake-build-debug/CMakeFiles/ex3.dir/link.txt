@@ -1,1 +1,1 @@
-/usr/bin/c++  -pthread -g   CMakeFiles/ex3.dir/MapReduceFramework.cpp.o CMakeFiles/ex3.dir/Sample_Client/SampleClient.cpp.o CMakeFiles/ex3.dir/Barrier/Barrier.cpp.o  -o ex3 
+/usr/bin/c++  -pthread -g   CMakeFiles/ex3.dir/MapReduceFramework.cpp.o CMakeFiles/ex3.dir/Barrier/Barrier.cpp.o CMakeFiles/ex3.dir/Atomic/atomicdemo.cpp.o CMakeFiles/ex3.dir/Sample_Client/SampleClient.cpp.o  -o ex3 

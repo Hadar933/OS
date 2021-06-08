@@ -1,4 +1,5 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/ex3.dir/Atomic/atomicdemo.cpp.o"
   "CMakeFiles/ex3.dir/Barrier/Barrier.cpp.o"
   "CMakeFiles/ex3.dir/MapReduceFramework.cpp.o"
   "CMakeFiles/ex3.dir/Sample_Client/SampleClient.cpp.o"
