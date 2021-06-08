@@ -8,9 +8,10 @@
 #include "Barrier/Barrier.h"
 #include <pthread.h>
 #include <iostream>
-//typedef std::vector<> vector;
 
-
+/**
+ * a struct of all relevant mutexes
+ */
 typedef struct{
     pthread_mutex_t map_mutex;
     pthread_mutex_t emit2_mutex;
@@ -19,6 +20,9 @@ typedef struct{
     pthread_mutex_t emit3_mutex;
 }mutex_struct;
 
+/**
+ * a struct containing all the context relevant to some job
+ */
 typedef struct{
     std::map<pthread_t,IntermediateVec> id_to_vec_map; // maps thread ids to intermediate vectors
     std::map<K2*,std::vector<V2*>> key_to_vec_map; // maps k2 To vector of v2s (for shuffling)
@@ -39,6 +43,11 @@ typedef struct{
 }JobContext;
 
 
+/**
+ * this is actually a setter for a new state
+ * @param job
+ * @param state - new state to assign
+ */
 void getJobState(JobHandle job, JobState* state){
     auto jc = (JobContext*)job;
     jc->j_state.percentage = state->percentage;
@@ -69,6 +78,13 @@ void unlock_mutex(pthread_mutex_t *mutex){
     }
 }
 
+void free_id_to_vec_map(JobContext jc){
+    for (auto &elem: jc.id_to_vec_map){
+
+    }
+
+}
+
 /**
  * converts a map of k2 keys->intermediate vec to vector of intermediate vectors
  * @param key_to_vec_map
@@ -92,11 +108,11 @@ std::vector<IntermediateVec> convert_map_type(const std::map<K2*,std::vector<V2*
  * @return
  */
 void* thread_cycle(void *arg){
+
     // MAP PHASE //
     auto *jc = (JobContext*) arg;
     JobState new_js = {MAP_STAGE,0};
     getJobState(jc,&new_js);
-//    int old_value = 0;
     int input_size = jc->input_vec.size();
     for (int i = 0; i < input_size; ++i){
         lock_mutex(&jc->mutexes.map_mutex);
@@ -125,8 +141,8 @@ void* thread_cycle(void *arg){
                 IntermediatePair cur_pair = cur_vec.back();
                 cur_vec.pop_back();
                 if (jc->key_to_vec_map.find(cur_pair.first)==jc->key_to_vec_map.end()){ // no vector with such key
-                    auto *v = new std::vector<V2*>; // creating new vector
-                    jc->key_to_vec_map[cur_pair.first] = *v;
+                    std::vector<V2*> v;
+                    jc->key_to_vec_map[cur_pair.first] = v;
                     jc->inter_vec_vec_atomic_count ++;
                 }
                 jc->key_to_vec_map[cur_pair.first].push_back(cur_pair.second);  // adding the pair to the needed vector
@@ -171,31 +187,42 @@ startMapReduceJob(const MapReduceClient &client, const InputVec &inputVec, Outpu
                                      PTHREAD_MUTEX_INITIALIZER},
 
     };
-
     for (int i = 0; i < multiThreadLevel; ++i) {
         pthread_create(threads + i, nullptr, thread_cycle, &job_c); // TODO handle success or fail return values
         if (i==0){
             job_c.zero_thread = pthread_self(); // distinguishing the first thread, which will do SHUFFLE
         }
     }
-
-
-
     return static_cast<JobHandle>(&job_c);
 }
+
+/**
+ * saves the intermediary element in a dictionary of tid: intermediary vector
+ * and updates the number of intermediary elements using atomic counter
+ * @param key
+ * @param value
+ * @param context
+ */
 void emit2 (K2* key, V2* value, void* context){
     auto jc = (JobContext*) context;
     lock_mutex(&jc->mutexes.emit2_mutex);
     pthread_t tid = pthread_self();
     if (jc->id_to_vec_map.find(tid)==jc->id_to_vec_map.end()){ // no vector corresponds to self thread id
-        auto *inter_vec = new IntermediateVec(); // creating new vector
-        jc->id_to_vec_map[tid] = *inter_vec;
+        IntermediateVec inter_vec;
+        jc->id_to_vec_map[tid] = inter_vec;
     }
     jc->id_to_vec_map[tid].push_back(IntermediatePair(key,value));  // adding the pair to the needed vector
     jc->inter_vec_atomic_count ++;
     unlock_mutex(&jc->mutexes.emit2_mutex);
 }
 
+/**
+ * saves the output element in outputVec (inside context) and updates the number of elements
+ * using atomic counter
+ * @param key
+ * @param value
+ * @param context
+ */
 void emit3 (K3* key, V3* value, void* context){
     auto jc = (JobContext*) context;
     lock_mutex(&jc->mutexes.emit3_mutex);
@@ -210,7 +237,6 @@ void emit3 (K3* key, V3* value, void* context){
  */
 void waitForJob(JobHandle job){
     auto jc = (JobContext*) job;
-
     if (!jc->already_waited){
         for (int i = 0; i < jc->num_threads; ++i) {
             pthread_join(jc->threads[i], nullptr);
@@ -220,17 +246,24 @@ void waitForJob(JobHandle job){
 }
 
 /**
+ * destroys all the mutexes
+ * @param jc
+ */
+void destroy_all_mutex(JobContext* jc){
+    pthread_mutex_destroy(&jc->mutexes.map_mutex);
+    pthread_mutex_destroy(&jc->mutexes.emit2_mutex);
+    pthread_mutex_destroy(&jc->mutexes.shuffle_mutex);
+    pthread_mutex_destroy(&jc->mutexes.reduce_mutex);
+    pthread_mutex_destroy(&jc->mutexes.emit3_mutex);
+}
+
+/**
  * closes a job - destroys mutex and frees memory
  * @param job
  */
 void closeJobHandle(JobHandle job){
     auto jc = (JobContext*) job;
     waitForJob(job);
-    pthread_mutex_destroy(&jc->mutexes.map_mutex);
-    pthread_mutex_destroy(&jc->mutexes.emit2_mutex);
-    pthread_mutex_destroy(&jc->mutexes.shuffle_mutex);
-    pthread_mutex_destroy(&jc->mutexes.reduce_mutex);
-    pthread_mutex_destroy(&jc->mutexes.emit3_mutex);
-
-
+    destroy_all_mutex(jc);
+    delete jc->barrier;
 }
