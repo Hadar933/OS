@@ -15,19 +15,20 @@ typedef struct{
     pthread_mutex_t map_mutex;
     pthread_mutex_t emit2_mutex;
     pthread_mutex_t shuffle_mutex;
+    pthread_mutex_t reduce_mutex;
+
 
 }mutex_struct;
 
 typedef struct{
     std::map<pthread_t,IntermediateVec> id_to_vec_map; // maps thread ids to intermediate vectors
-    std::map<K2*,std::vector<V2*>> key_to_vec_map; // maps k2 To V2 (for shuffling)
+    std::map<K2*,std::vector<V2*>> key_to_vec_map; // maps k2 To vector of v2s (for shuffling)
     const MapReduceClient *client;
     JobState j_state;
     const InputVec input_vec;
     OutputVec out_vec;
     Barrier *barrier;
     pthread_t zero_thread;
-    std::vector<IntermediateVec> inter_vec_vec;
     int num_threads;
     std::atomic<uint32_t>* jobs_atomic_count;
     std::atomic<uint32_t>* inter_vec_atomic_count;
@@ -43,7 +44,10 @@ void getJobState(JobHandle job, JobState* state){
     jc->j_state.stage = state->stage;
 }
 
-
+/**
+ * locks a given mutex
+ * @param mutex
+ */
 void lock_mutex(pthread_mutex_t *mutex){
     if (pthread_mutex_lock(mutex) != 0){
         std::cerr << "Error: cannot lock mutex" << std::endl;
@@ -51,7 +55,13 @@ void lock_mutex(pthread_mutex_t *mutex){
     }
 }
 
+/**
+ * unlocks a given mutex
+ * @param mutex
+ */
 void unlock_mutex(pthread_mutex_t *mutex){
+    /*
+     */
     if (pthread_mutex_unlock(mutex) != 0){
         std::cerr << "Error: cannot unlock mutex" << std::endl;
         exit(EXIT_FAILURE);
@@ -59,8 +69,25 @@ void unlock_mutex(pthread_mutex_t *mutex){
 }
 
 /**
- *
- * @param arg
+ * converts a map of k2 keys->intermediate vec to vector of intermediate vectors
+ * @param key_to_vec_map
+ * @return vector of intermediate vectors
+ */
+std::vector<IntermediateVec> convert_map_type(const std::map<K2*,std::vector<V2*>>& key_to_vec_map){
+    std::vector<IntermediateVec> ret;
+    for (auto &elem: key_to_vec_map){
+        IntermediateVec v;
+        for (auto &item: elem.second){
+            v.push_back(IntermediatePair(elem.first,item));
+        }
+        ret.push_back(v);
+    }
+    return ret;
+}
+
+/**
+ * performs an entire thread life cycle
+ * @param arg the context (casted to job handler)
  * @return
  */
 void* thread_cycle(void *arg){
@@ -88,7 +115,6 @@ void* thread_cycle(void *arg){
     // SHUFFLE PHASE //
     lock_mutex(&jc->mutexes.shuffle_mutex);
 
-
     if (pthread_self()==jc->zero_thread){ // only the 0th thread shuffles.
         for(auto &elem: jc->id_to_vec_map){
             IntermediateVec cur_vec = elem.second;
@@ -110,6 +136,13 @@ void* thread_cycle(void *arg){
     jc->barrier->barrier();
 
     // REDUCE PHASE //
+    std::vector<IntermediateVec> queue = convert_map_type(jc->key_to_vec_map);
+    while(!queue.empty()){
+        const IntermediateVec cur_vec = queue.back();
+        jc->client->reduce(&cur_vec,jc);
+    }
+
+
 
 
 
@@ -133,7 +166,8 @@ startMapReduceJob(const MapReduceClient &client, const InputVec &inputVec, Outpu
                          .jobs_atomic_count = &job_count,
                          .inter_vec_atomic_count = &inter_vec_count,
                          .inter_vec_vec_atomic_count = &inter_vec_vec_count,
-                         .mutexes = {PTHREAD_MUTEX_INITIALIZER,PTHREAD_MUTEX_INITIALIZER,PTHREAD_MUTEX_INITIALIZER}
+                         .mutexes = {PTHREAD_MUTEX_INITIALIZER,PTHREAD_MUTEX_INITIALIZER,
+                                     PTHREAD_MUTEX_INITIALIZER,PTHREAD_MUTEX_INITIALIZER}
                          };
 
     for (int i = 0; i < multiThreadLevel; ++i) {
