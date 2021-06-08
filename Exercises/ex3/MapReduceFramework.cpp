@@ -16,8 +16,7 @@ typedef struct{
     pthread_mutex_t emit2_mutex;
     pthread_mutex_t shuffle_mutex;
     pthread_mutex_t reduce_mutex;
-
-
+    pthread_mutex_t emit3_mutex;
 }mutex_struct;
 
 typedef struct{
@@ -30,10 +29,12 @@ typedef struct{
     Barrier *barrier;
     pthread_t zero_thread;
     int num_threads;
+    bool already_waited;
+    pthread_t *threads;
     std::atomic<uint32_t>* jobs_atomic_count;
     std::atomic<uint32_t>* inter_vec_atomic_count;
     std::atomic<uint32_t>* inter_vec_vec_atomic_count;
-
+    std::atomic<uint32_t>* out_vec_atomic_count;
     mutex_struct mutexes;
 }JobContext;
 
@@ -98,7 +99,6 @@ void* thread_cycle(void *arg){
 //    int old_value = 0;
     int input_size = jc->input_vec.size();
     for (int i = 0; i < input_size; ++i){
-        //TODO: bug achusharmuta find tomorrow morning
         lock_mutex(&jc->mutexes.map_mutex);
         int old_value = (*(jc->jobs_atomic_count))++;
         InputPair pair = jc->input_vec[old_value];
@@ -109,7 +109,9 @@ void* thread_cycle(void *arg){
 
     // SORT PHASE //
     IntermediateVec curr_vec = jc->id_to_vec_map[pthread_self()];
-    std::sort(curr_vec.begin(),curr_vec.end()); // sorting according to K2 (first)
+    std::sort(curr_vec.begin(),curr_vec.end(), [](IntermediatePair p1, IntermediatePair p2){
+        return *p2.first < *p1.first;
+    }); // sorting according to K2 (first)
     jc->barrier->barrier();
 
     // SHUFFLE PHASE //
@@ -141,11 +143,6 @@ void* thread_cycle(void *arg){
         const IntermediateVec cur_vec = queue.back();
         jc->client->reduce(&cur_vec,jc);
     }
-
-
-
-
-
     return nullptr;
 }
 JobHandle
@@ -154,7 +151,7 @@ startMapReduceJob(const MapReduceClient &client, const InputVec &inputVec, Outpu
     std::atomic<uint32_t> job_count(0);
     std::atomic<uint32_t> inter_vec_count(0);
     std::atomic<uint32_t> inter_vec_vec_count(0);
-
+    std::atomic<uint32_t> out_vec_count(0);
 
     JobContext  job_c = {.id_to_vec_map = {},
                          .client = &client,
@@ -163,12 +160,17 @@ startMapReduceJob(const MapReduceClient &client, const InputVec &inputVec, Outpu
                          .out_vec = outputVec,
                          .barrier = new Barrier(multiThreadLevel),
                          .num_threads = multiThreadLevel,
+                         .already_waited = false,
+                         .threads = threads,
                          .jobs_atomic_count = &job_count,
                          .inter_vec_atomic_count = &inter_vec_count,
                          .inter_vec_vec_atomic_count = &inter_vec_vec_count,
+                         .out_vec_atomic_count = &out_vec_count,
                          .mutexes = {PTHREAD_MUTEX_INITIALIZER,PTHREAD_MUTEX_INITIALIZER,
-                                     PTHREAD_MUTEX_INITIALIZER,PTHREAD_MUTEX_INITIALIZER}
-                         };
+                                     PTHREAD_MUTEX_INITIALIZER,PTHREAD_MUTEX_INITIALIZER,
+                                     PTHREAD_MUTEX_INITIALIZER},
+
+    };
 
     for (int i = 0; i < multiThreadLevel; ++i) {
         pthread_create(threads + i, nullptr, thread_cycle, &job_c); // TODO handle success or fail return values
@@ -177,9 +179,7 @@ startMapReduceJob(const MapReduceClient &client, const InputVec &inputVec, Outpu
         }
     }
 
-    for (int i = 0; i < multiThreadLevel; ++i) { // wait for all threads to finish their cycle
-        pthread_join(threads[i], nullptr);
-    }
+
 
     return static_cast<JobHandle>(&job_c);
 }
@@ -195,14 +195,42 @@ void emit2 (K2* key, V2* value, void* context){
     jc->inter_vec_atomic_count ++;
     unlock_mutex(&jc->mutexes.emit2_mutex);
 }
+
 void emit3 (K3* key, V3* value, void* context){
-
+    auto jc = (JobContext*) context;
+    lock_mutex(&jc->mutexes.emit3_mutex);
+    jc->out_vec.push_back(OutputPair(key,value));
+    jc->out_vec_atomic_count++;
+    unlock_mutex(&jc->mutexes.emit3_mutex);
 }
 
+/**
+ * uses pthread_join to wait for jobs.
+ * @param job
+ */
 void waitForJob(JobHandle job){
+    auto jc = (JobContext*) job;
 
+    if (!jc->already_waited){
+        for (int i = 0; i < jc->num_threads; ++i) {
+            pthread_join(jc->threads[i], nullptr);
+        }
+        jc->already_waited = true;
+    }
 }
 
+/**
+ * closes a job - destroys mutex and frees memory
+ * @param job
+ */
 void closeJobHandle(JobHandle job){
-    
+    auto jc = (JobContext*) job;
+    waitForJob(job);
+    pthread_mutex_destroy(&jc->mutexes.map_mutex);
+    pthread_mutex_destroy(&jc->mutexes.emit2_mutex);
+    pthread_mutex_destroy(&jc->mutexes.shuffle_mutex);
+    pthread_mutex_destroy(&jc->mutexes.reduce_mutex);
+    pthread_mutex_destroy(&jc->mutexes.emit3_mutex);
+
+
 }
