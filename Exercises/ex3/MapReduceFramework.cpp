@@ -9,6 +9,11 @@
 #include <pthread.h>
 #include <iostream>
 
+#define THREAD_INIT_ERR "system error: couldn't initialize thread"
+
+#define MUTEX_LOCK_ERR "system error: couldn't lock mutex"
+#define MUTEX_UNLOCK_ERR "system error: couldn't unlock mutex"
+
 
 /**
  * a struct of all relevant mutexes
@@ -71,7 +76,7 @@ void getJobState(JobHandle job, JobState* state){
  */
 void lock_mutex(pthread_mutex_t *mutex){
     if (pthread_mutex_lock(mutex) != 0){
-        std::cerr << "Error: cannot lock mutex" << std::endl;
+        std::cerr << MUTEX_LOCK_ERR << std::endl;
         exit(EXIT_FAILURE);
     }
 }
@@ -84,7 +89,7 @@ void unlock_mutex(pthread_mutex_t *mutex){
     /*
      */
     if (pthread_mutex_unlock(mutex) != 0){
-        std::cerr << "Error: cannot unlock mutex" << std::endl;
+        std::cerr << MUTEX_UNLOCK_ERR << std::endl;
         exit(EXIT_FAILURE);
     }
 }
@@ -119,10 +124,13 @@ void* thread_cycle(void *arg){
     JobState stage = {MAP_STAGE, 0};
     getJobState(jc,&stage);
     int input_size = jc->input_vec.size();
-    for (int i = 0; i < input_size; ++i){
+    int old_value = 0;
+    while (old_value < input_size){
         lock_mutex(&jc->mutexes.map_mutex);
-        int old_value = (*(jc->map_atomic_count))++;
+        old_value = (*(jc->map_atomic_count))++;
         InputPair pair = jc->input_vec[old_value];
+
+
         jc->client->map(pair.first,pair.second,arg);
         unlock_mutex(&jc->mutexes.map_mutex);
     }
@@ -171,13 +179,13 @@ void* thread_cycle(void *arg){
 
 JobHandle
 startMapReduceJob(const MapReduceClient &client, const InputVec &inputVec, OutputVec &outputVec, int multiThreadLevel) {
-    pthread_t threads[multiThreadLevel];
+    auto *threads = new pthread_t(multiThreadLevel);
     std::atomic<uint32_t> job_count(0);
     std::atomic<uint32_t> inter_vec_count(0);
     std::atomic<uint32_t> inter_vec_vec_count(0);
     std::atomic<uint32_t> out_vec_count(0);
 
-    JobContext  job_c = {.id_to_vec_map = {},
+    JobContext job_c = { .id_to_vec_map = {},
                          .client = &client,
                          .j_state = {UNDEFINED_STAGE,0},
                          .input_vec = inputVec,
@@ -195,13 +203,17 @@ startMapReduceJob(const MapReduceClient &client, const InputVec &inputVec, Outpu
                                      PTHREAD_MUTEX_INITIALIZER},
 
     };
-    for (int i = 0; i < multiThreadLevel; ++i) {
-        pthread_create(threads + i, nullptr, thread_cycle, &job_c); // TODO handle success or fail return values
+    for (int i = 0; i < multiThreadLevel; ++i){
+        if(pthread_create(threads + i, nullptr, thread_cycle, &job_c)!=0){
+            std::cerr << THREAD_INIT_ERR << std::endl;
+            exit(EXIT_FAILURE);
+        } // TODO handle success or fail return values
         if (i==0){
             job_c.zero_thread = pthread_self(); // distinguishing the first thread, which will do SHUFFLE
         }
     }
-    return static_cast<JobHandle>(&job_c);
+    auto jc = static_cast<JobHandle>(&job_c);
+    return jc;
 }
 
 /**
