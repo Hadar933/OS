@@ -8,6 +8,7 @@
 #include "Barrier/Barrier.h"
 #include <pthread.h>
 #include <iostream>
+#include "math.h"
 
 #define THREAD_INIT_ERR "system error: couldn't initialize thread"
 
@@ -29,7 +30,7 @@ typedef struct{
 /**
  * a struct containing all the context relevant to some job
  */
-typedef struct{
+typedef struct JobContext{
     std::map<pthread_t,IntermediateVec> id_to_vec_map; // maps thread ids to intermediate vectors
     std::map<K2*,std::vector<V2*>> key_to_vec_map; // maps k2 To vector of v2s (for shuffling)
     const MapReduceClient *client;
@@ -41,7 +42,7 @@ typedef struct{
     int num_threads;
     bool already_waited;
     pthread_t *threads;
-    std::atomic<uint64_t> map_atomic_count;
+    std::atomic<uint64_t> ac;
     std::atomic<uint64_t> inter_vec_atomic_count;
     std::atomic<uint64_t> inter_vec_vec_atomic_count;
     std::atomic<uint64_t> out_vec_atomic_count;
@@ -58,13 +59,16 @@ void getJobState(JobHandle job, JobState* state){
     //TODO: infinite loop. diff threads are in diff stages which is impossible.
     auto jc = (JobContext*)job;
     if(jc->j_state.stage == MAP_STAGE){
-        jc->j_state.percentage = (float) 100 * jc->map_atomic_count.load() / jc->input_vec->size();
+        uint64_t z = pow(2,31) - 1;
+        unsigned  long processed = jc->ac & z;
+        jc->j_state.percentage = (float) 100 * processed / jc->input_vec->size();
     }else if(jc->j_state.stage == SHUFFLE_STAGE){
-        int size = 0;
+        int processed = 0;
         for (const auto &vecMap : jc->key_to_vec_map) {
-            size += vecMap.second.size();
+            processed += vecMap.second.size();
         }
-        jc->j_state.percentage = 100 * size / jc->input_vec->size();
+        int size = (jc->ac << 2) >> 33;
+        jc->j_state.percentage = 100 * processed / size;
     }else if(jc->j_state.stage ==REDUCE_STAGE){
         jc->j_state.percentage = 100 * jc->out_vec_atomic_count.load() / jc->input_vec->size();
     }
@@ -123,20 +127,19 @@ void* thread_cycle(void *arg){
     // MAP PHASE //
     auto *jc = (JobContext*) arg;
     JobState stage = {MAP_STAGE, 0};
+    uint64_t phase_shift = 1<<62;
+    jc->ac += phase_shift;
     getJobState(jc,&stage);
     int input_size = jc->input_vec->size();
     int old_value = 0;
-    while (old_value < input_size){
+    uint64_t z  = pow(2,31) - 1;
+    while ((old_value & z)  < input_size){
         lock_mutex(&jc->mutexes.map_mutex);
-        old_value = ((jc->map_atomic_count))++;
-        InputPair pair = jc->input_vec->at(old_value);
-
-
+        old_value = ((jc->ac))++;
+        InputPair pair = jc->input_vec->at(old_value & z);
         jc->client->map(pair.first,pair.second,arg);
         unlock_mutex(&jc->mutexes.map_mutex);
     }
-
-
 
     // SORT PHASE //
     IntermediateVec curr_vec = jc->id_to_vec_map[pthread_self()];
@@ -146,35 +149,35 @@ void* thread_cycle(void *arg){
     jc->barrier->barrier();
 
     // SHUFFLE PHASE //
-    stage = {SHUFFLE_STAGE, 0};
-
-    lock_mutex(&jc->mutexes.shuffle_mutex);
-
+    jc->j_state = {SHUFFLE_STAGE, 0};
+    jc->ac -= input_size;
     if (pthread_self()==jc->zero_thread){ // only the 0th thread shuffles.
-        for(auto &elem: jc->id_to_vec_map){
-            IntermediateVec cur_vec = elem.second;
-            std::vector<V2> v2_vec;
+        lock_mutex(&jc->mutexes.shuffle_mutex);
+        for(auto &tid: jc->id_to_vec_map){
+            IntermediateVec cur_vec = tid.second;
             while(!cur_vec.empty()){
                 IntermediatePair cur_pair = cur_vec.back();
                 cur_vec.pop_back();
                 if (jc->key_to_vec_map.find(cur_pair.first)==jc->key_to_vec_map.end()){ // no vector with such key
                     std::vector<V2*> v;
                     jc->key_to_vec_map[cur_pair.first] = v;
-                    jc->inter_vec_vec_atomic_count ++;
+                    (jc->ac)++;  // count number of vectors in queue
                 }
                 jc->key_to_vec_map[cur_pair.first].push_back(cur_pair.second);  // adding the pair to the needed vector
             }
         }
+        unlock_mutex(&jc->mutexes.shuffle_mutex);
     }
-    unlock_mutex(&jc->mutexes.shuffle_mutex);
-
     jc->barrier->barrier();
 
     // REDUCE PHASE //
-    stage = {REDUCE_STAGE, 0};
+    jc->j_state = {REDUCE_STAGE, 0};
     std::vector<IntermediateVec> queue = convert_map_type(jc->key_to_vec_map);
-    while(!queue.empty()){
-        const IntermediateVec cur_vec = queue.back();
+    // init old_val and the atomic counter //
+    old_value=0; jc->ac=queue.size() - 1;
+    while((old_value&z) >= 0){
+        old_value = (jc->ac)--;
+        const IntermediateVec cur_vec = queue[old_value&z];
         jc->client->reduce(&cur_vec,jc);
     }
     return nullptr;
@@ -185,21 +188,21 @@ startMapReduceJob(const MapReduceClient &client, const InputVec &inputVec, Outpu
     auto *threads = new pthread_t(multiThreadLevel);
 
     JobContext job_c = { .id_to_vec_map = {},
-                         .client = &client,
-                         .j_state = {UNDEFINED_STAGE,0},
-                         .input_vec = &inputVec,
-                         .out_vec = &outputVec,
-                         .barrier = new Barrier(multiThreadLevel),
-                         .num_threads = multiThreadLevel,
-                         .already_waited = false,
-                         .threads = threads,
-                         .map_atomic_count{0},
-                         .inter_vec_atomic_count{0},
-                         .inter_vec_vec_atomic_count{0},
-                         .out_vec_atomic_count{0},
-                         .mutexes = {PTHREAD_MUTEX_INITIALIZER,PTHREAD_MUTEX_INITIALIZER,
-                                     PTHREAD_MUTEX_INITIALIZER,PTHREAD_MUTEX_INITIALIZER,
-                                     PTHREAD_MUTEX_INITIALIZER},
+            .client = &client,
+            .j_state = {UNDEFINED_STAGE,0},
+            .input_vec = &inputVec,
+            .out_vec = &outputVec,
+            .barrier = new Barrier(multiThreadLevel),
+            .num_threads = multiThreadLevel,
+            .already_waited = false,
+            .threads = threads,
+            .ac{0},
+            .inter_vec_atomic_count{0},
+            .inter_vec_vec_atomic_count{0},
+            .out_vec_atomic_count{0},
+            .mutexes = {PTHREAD_MUTEX_INITIALIZER,PTHREAD_MUTEX_INITIALIZER,
+                        PTHREAD_MUTEX_INITIALIZER,PTHREAD_MUTEX_INITIALIZER,
+                        PTHREAD_MUTEX_INITIALIZER},
 
     };
     for (int i = 0; i < multiThreadLevel; ++i){
@@ -231,7 +234,8 @@ void emit2 (K2* key, V2* value, void* context){
         jc->id_to_vec_map[tid] = inter_vec;
     }
     jc->id_to_vec_map[tid].push_back(IntermediatePair(key,value));  // adding the pair to the needed vector
-    jc->inter_vec_atomic_count ++;
+    uint64_t inc = 1 << 31;
+    jc->ac += inc;
     unlock_mutex(&jc->mutexes.emit2_mutex);
 }
 
@@ -246,9 +250,9 @@ void emit3 (K3* key, V3* value, void* context){
     auto jc = (JobContext*) context;
     lock_mutex(&jc->mutexes.emit3_mutex);
     jc->out_vec->push_back(OutputPair(key,value));
-    jc->out_vec_atomic_count++;
+    uint64_t inc = 1 << 31;
+    jc->ac += inc;
     unlock_mutex(&jc->mutexes.emit3_mutex);
-
 }
 
 /**
