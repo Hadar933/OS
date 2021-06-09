@@ -11,10 +11,12 @@
 #include "math.h"
 
 #define THREAD_INIT_ERR "system error: couldn't initialize thread"
-
 #define MUTEX_LOCK_ERR "system error: couldn't lock mutex"
 #define MUTEX_UNLOCK_ERR "system error: couldn't unlock mutex"
 
+const uint64_t one_64 =1;
+const uint64_t two_64 = 2;
+const uint64_t large_r_shift = 33;
 
 /**
  * a struct of all relevant mutexes
@@ -43,9 +45,9 @@ typedef struct JobContext{
     bool already_waited;
     pthread_t *threads;
     std::atomic<uint64_t> ac;
-    std::atomic<uint64_t> inter_vec_atomic_count;
-    std::atomic<uint64_t> inter_vec_vec_atomic_count;
-    std::atomic<uint64_t> out_vec_atomic_count;
+//    std::atomic<uint64_t> inter_vec_atomic_count;
+//    std::atomic<uint64_t> inter_vec_vec_atomic_count;
+//    std::atomic<uint64_t> out_vec_atomic_count;
     mutex_struct mutexes;
 }JobContext;
 
@@ -55,24 +57,25 @@ typedef struct JobContext{
  * @param job
  * @param state - new state to assign
  */
-void getJobState(JobHandle job, JobState* state){
+void getJobState(JobHandle job, JobState* state) {
     //TODO: infinite loop. diff threads are in diff stages which is impossible.
-    auto jc = (JobContext*)job;
-    if(jc->j_state.stage == MAP_STAGE){
-        uint64_t z = pow(2,31) - 1;
-        unsigned  long processed = jc->ac & z;
-        jc->j_state.percentage = (float) 100 * processed / jc->input_vec->size();
-    }else if(jc->j_state.stage == SHUFFLE_STAGE){
+    auto jc = (JobContext *) job;
+    if (jc->j_state.stage == MAP_STAGE) {
+        uint64_t z = pow(2, 31) - 1;
+        unsigned long processed = jc->ac & z;
+        jc->j_state.percentage = 100 * (float) processed / (float) jc->input_vec->size();
+    } else if (jc->j_state.stage == SHUFFLE_STAGE) {
         int processed = 0;
         for (const auto &vecMap : jc->key_to_vec_map) {
             processed += vecMap.second.size();
         }
-        int size = (jc->ac << 2) >> 33;
-        jc->j_state.percentage = 100 * processed / size;
-    }else if(jc->j_state.stage ==REDUCE_STAGE){
-        jc->j_state.percentage = 100 * jc->out_vec_atomic_count.load() / jc->input_vec->size();
+        int size = (jc->ac << two_64) >> large_r_shift;
+        jc->j_state.percentage = 100 * (float) processed / (float) size;
+    } else if (jc->j_state.stage == REDUCE_STAGE) {
+        int size = (jc->ac << two_64) >> large_r_shift;
+        jc->j_state.percentage = 100 * (float) size / (float) jc->key_to_vec_map.size();
+        jc->j_state.stage = state->stage;
     }
-    jc->j_state.stage = state->stage;
 }
 
 /**
@@ -127,11 +130,11 @@ void* thread_cycle(void *arg){
     // MAP PHASE //
     auto *jc = (JobContext*) arg;
     JobState stage = {MAP_STAGE, 0};
-    uint64_t phase_shift = 1<<62;
+    uint64_t phase_shift = one_64 << 62;
     jc->ac += phase_shift;
     getJobState(jc,&stage);
     int input_size = jc->input_vec->size();
-    int old_value = 0;
+    uint64_t old_value = 0;
     uint64_t z  = pow(2,31) - 1;
     while ((old_value & z)  < input_size){
         lock_mutex(&jc->mutexes.map_mutex);
@@ -149,8 +152,8 @@ void* thread_cycle(void *arg){
     jc->barrier->barrier();
 
     // SHUFFLE PHASE //
-    jc->j_state = {SHUFFLE_STAGE, 0};
-    jc->ac -= input_size;
+    jc->j_state = {SHUFFLE_STAGE, 0}; jc->ac += phase_shift;  jc->ac -= input_size;
+
     if (pthread_self()==jc->zero_thread){ // only the 0th thread shuffles.
         lock_mutex(&jc->mutexes.shuffle_mutex);
         for(auto &tid: jc->id_to_vec_map){
@@ -171,10 +174,11 @@ void* thread_cycle(void *arg){
     jc->barrier->barrier();
 
     // REDUCE PHASE //
-    jc->j_state = {REDUCE_STAGE, 0};
+    jc->j_state = {REDUCE_STAGE, 0};jc->ac += phase_shift;
+
     std::vector<IntermediateVec> queue = convert_map_type(jc->key_to_vec_map);
     // init old_val and the atomic counter //
-    old_value=0; jc->ac=queue.size() - 1;
+    old_value=0;
     while((old_value&z) >= 0){
         old_value = (jc->ac)--;
         const IntermediateVec cur_vec = queue[old_value&z];
@@ -197,9 +201,9 @@ startMapReduceJob(const MapReduceClient &client, const InputVec &inputVec, Outpu
             .already_waited = false,
             .threads = threads,
             .ac{0},
-            .inter_vec_atomic_count{0},
-            .inter_vec_vec_atomic_count{0},
-            .out_vec_atomic_count{0},
+//            .inter_vec_atomic_count{0},
+//            .inter_vec_vec_atomic_count{0},
+//            .out_vec_atomic_count{0},
             .mutexes = {PTHREAD_MUTEX_INITIALIZER,PTHREAD_MUTEX_INITIALIZER,
                         PTHREAD_MUTEX_INITIALIZER,PTHREAD_MUTEX_INITIALIZER,
                         PTHREAD_MUTEX_INITIALIZER},
