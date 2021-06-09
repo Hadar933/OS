@@ -20,7 +20,7 @@ const uint64_t two_64 = 2;
 const uint64_t thirty_three_64 = 33;
 const uint64_t sixty_two_64 = 62;
 const uint64_t phase_shift= one_64 << sixty_two_64;
-const int mutex_num = 5;
+const int mutex_num = 6;
 
 /**
  * a struct of all relevant mutexes
@@ -31,18 +31,19 @@ typedef struct{
     pthread_mutex_t shuffle_mutex;
     pthread_mutex_t reduce_mutex;
     pthread_mutex_t emit3_mutex;
+    pthread_mutex_t cycle_mutex;
 }mutex_struct;
 
 /**
  * a struct containing all the context relevant to some job
  */
 typedef struct JobContext{
-    std::map<pthread_t,IntermediateVec> id_to_vec_map; // maps thread ids to intermediate vectors
-    std::map<K2*,std::vector<V2*>> key_to_vec_map; // maps k2 To vector of v2s (for shuffling)
-    const MapReduceClient *client;
+    std::map<pthread_t,IntermediateVec*>& id_to_vec_map; // maps thread ids to intermediate vectors
+    std::map<K2*,std::vector<V2*>>& key_to_vec_map; // maps k2 To vector of v2s (for shuffling)
+    const MapReduceClient &client;
     JobState j_state;
-    const InputVec* input_vec;
-    OutputVec* out_vec;
+    const InputVec& input_vec;
+    OutputVec& out_vec;
     Barrier *barrier;
     pthread_t zero_thread;
     int num_threads;
@@ -63,7 +64,7 @@ void getJobState(JobHandle job, JobState* state) {
     if (jc->j_state.stage == MAP_STAGE) {
         uint64_t z = pow(2, 31) - 1;
         unsigned long processed = jc->ac & z;
-        jc->j_state.percentage = 100 * (float) processed / (float) jc->input_vec->size();
+        jc->j_state.percentage = 100 * (float) processed / (float) jc->input_vec.size();
     } else if (jc->j_state.stage == SHUFFLE_STAGE) {
         int processed = 0;
         for (const auto &vecMap : jc->key_to_vec_map) {
@@ -128,14 +129,14 @@ std::vector<IntermediateVec> convert_map_type(const std::map<K2*,std::vector<V2*
 void map_phase(JobContext *jc) {
     uint64_t old_value= 0;
     uint64_t z= pow(2, 31) - 1;
-    int input_size = jc->input_vec->size();
+    int input_size = jc->input_vec.size();
     jc->j_state = {MAP_STAGE, 0};
-    jc->ac += phase_shift;
-    while ((old_value & z) < input_size){
+    jc->ac += phase_shift; // TODO: changed from 00 to 10 instead of 01
+    while ((old_value & z) < input_size-1){
 //        lock_mutex(&jc->mutexes.map_mutex);
         old_value = ((jc->ac))++;
-        InputPair pair = jc->input_vec->at(old_value & z);
-        jc->client->map(pair.first,pair.second,jc);
+        InputPair pair = jc->input_vec[(int) (old_value & z)];
+        jc->client.map(pair.first,pair.second,jc);
 //        unlock_mutex(&jc->mutexes.map_mutex);
     }
 }
@@ -145,11 +146,12 @@ void map_phase(JobContext *jc) {
  * @param jc
  */
 void sort_phase(JobContext *jc) {
-    IntermediateVec curr_vec = jc->id_to_vec_map[pthread_self()];
-    std::sort(curr_vec.begin(),curr_vec.end(), [](IntermediatePair p1, IntermediatePair p2){
-        return *p2.first < *p1.first;
-    }); // sorting according to K2 (first)
-    jc->barrier->barrier();
+    IntermediateVec *curr_vec = jc->id_to_vec_map[pthread_self()];
+    std::sort(curr_vec->begin(),curr_vec->end());
+
+    //, [](IntermediatePair p1, IntermediatePair p2){
+      //  return *p2.first < *p1.first;
+    // sorting according to K2 (first)
 }
 
 /**
@@ -157,19 +159,37 @@ void sort_phase(JobContext *jc) {
  * @param jc
  */
 void shuffle_phase(JobContext *jc) {
-    int input_size = jc->input_vec->size();
+    int input_size = jc->input_vec.size();
     jc->j_state = {SHUFFLE_STAGE, 0};
-    jc->ac += phase_shift;
+    jc->ac += phase_shift; // TODO: doesnt really work
     jc->ac -= input_size;
 
     if (pthread_self()==jc->zero_thread){ // only the 0th thread shuffles.
         lock_mutex(&jc->mutexes.shuffle_mutex);
         for(auto &tid: jc->id_to_vec_map){
-            IntermediateVec cur_vec = tid.second;
-            while(!cur_vec.empty()){
-                IntermediatePair cur_pair = cur_vec.back();
-                cur_vec.pop_back();
-                if (jc->key_to_vec_map.find(cur_pair.first)==jc->key_to_vec_map.end()){ // no vector with such key
+            IntermediateVec *cur_vec = tid.second;
+            while(!cur_vec->empty()){
+                IntermediatePair cur_pair = cur_vec->back();
+                cur_vec->pop_back();
+                bool found_item = false;
+                if (jc->key_to_vec_map.empty()){
+                    jc->key_to_vec_map[cur_pair.first].push_back(cur_pair.second);
+                    continue;
+                }
+                else{
+                    for(auto &elem: jc->key_to_vec_map){
+                        if(!((*elem.first < *cur_pair.first)||(*cur_pair.first < *elem.first))){
+                            // cur pair's key already in the map
+                            jc->key_to_vec_map[elem.first].push_back(cur_pair.second);
+                            found_item = true;
+                        }
+                    }
+                    if(!found_item){
+                        auto * new_vec = new std::vector<V2*>();
+                        new_vec->push_back(cur_pair.second);
+                        jc->key_to_vec_map[cur_pair.first] = *new_vec;
+                    }
+
                     std::vector<V2*> v;
                     jc->key_to_vec_map[cur_pair.first] = v;
                     (jc->ac)++;  // count number of vectors in queue
@@ -195,7 +215,7 @@ void reduce_phase(JobContext *jc) {
     while((old_value&z) >= 0){
         old_value = (jc->ac)--;
         const IntermediateVec cur_vec = queue[old_value&z];
-        jc->client->reduce(&cur_vec,jc);
+        jc->client.reduce(&cur_vec,jc);
     }
 }
 
@@ -206,20 +226,27 @@ void reduce_phase(JobContext *jc) {
  * @return
  */
 void* thread_cycle(void *arg){
-    auto *jc = (JobContext*) arg;
-//    lock_mutex(&jc->mutexes.thread_mutex);
+    JobContext *jc = (JobContext*) arg;
+
+    lock_mutex(&jc->mutexes.cycle_mutex);
+    std::vector<IntermediatePair> *cur_vec = new std::vector<IntermediatePair>();
+    if(jc->id_to_vec_map.empty()){
+        jc->zero_thread = pthread_self();
+    }
+    jc->id_to_vec_map.insert({pthread_self(),cur_vec});
+    unlock_mutex(&jc->mutexes.cycle_mutex);
 
     map_phase(jc);
 
     sort_phase(jc);
+
+    jc->barrier->barrier();
 
     shuffle_phase(jc);
 
     jc->barrier->barrier();
 
     reduce_phase(jc);
-
-    //unlock_mutex(&jc->mutexes.thread_mutex);
 
     return nullptr;
 }
@@ -230,14 +257,18 @@ JobHandle
 startMapReduceJob(const MapReduceClient &client, const InputVec &inputVec, OutputVec &outputVec, int multiThreadLevel) {
     pthread_mutex_t *mutexes = (pthread_mutex_t*) malloc(mutex_num * sizeof(pthread_mutex_t));
     pthread_t *threads = (pthread_t*) malloc(multiThreadLevel * sizeof(pthread_t));
+    auto id_to_vec_map = new std::map<pthread_t,IntermediateVec*>;
+    auto key_to_vec_map = new std::map<K2*,std::vector<V2*>>;
     for(int i=0; i< mutex_num; i++){
         mutexes[i] = PTHREAD_MUTEX_INITIALIZER;
     }
-    JobContext job_c = {
-            .client = &client,
+    JobContext *job_c = new JobContext {
+            .id_to_vec_map = *id_to_vec_map,
+            .key_to_vec_map = *key_to_vec_map,
+            .client = client,
             .j_state = {UNDEFINED_STAGE,0},
-            .input_vec = &inputVec,
-            .out_vec = &outputVec,
+            .input_vec = inputVec,
+            .out_vec = outputVec,
             .barrier = new Barrier(multiThreadLevel),
             .num_threads = multiThreadLevel,
             .already_waited = false,
@@ -248,22 +279,24 @@ startMapReduceJob(const MapReduceClient &client, const InputVec &inputVec, Outpu
                     .emit2_mutex = mutexes[1],
                     .shuffle_mutex =mutexes[2],
                     .reduce_mutex = mutexes[3],
-                    .emit3_mutex = mutexes[4]
+                    .emit3_mutex = mutexes[4],
+                    .cycle_mutex = mutexes[5]
             }
     };
 
     pthread_mutex_t init_mutex = PTHREAD_MUTEX_INITIALIZER;
     lock_mutex(&init_mutex);
     for (int i = 0; i < multiThreadLevel; ++i){
-        if(pthread_create(&job_c.threads[i], nullptr, thread_cycle, &job_c)!=0){
+        if(pthread_create(&threads[i], nullptr, thread_cycle, job_c)!=0){
             std::cerr << THREAD_INIT_ERR << std::endl;
             exit(EXIT_FAILURE);
         }
-        if (i==0){
-            job_c.zero_thread = pthread_self(); // distinguishing the first thread, which will do SHUFFLE
-        }
+//        if (i==0){
+//            job_c->zero_thread = pthread_self(); // distinguishing the first thread, which will do SHUFFLE
+//        }
     }
     unlock_mutex(&init_mutex);
+    pthread_mutex_destroy(&init_mutex);
     auto jc = static_cast<JobHandle>(&job_c);
     return jc;
 }
@@ -280,10 +313,10 @@ void emit2 (K2* key, V2* value, void* context){
     pthread_t tid = pthread_self();
     lock_mutex(&jc->mutexes.emit2_mutex);
     if (jc->id_to_vec_map.find(tid)==jc->id_to_vec_map.end()){ // no vector corresponds to self thread id
-        IntermediateVec inter_vec;
+        IntermediateVec *inter_vec;
         jc->id_to_vec_map.insert({tid, inter_vec});
     }
-    jc->id_to_vec_map[tid].push_back(IntermediatePair(key,value));  // adding the pair to the needed vector
+    jc->id_to_vec_map[tid]->push_back(IntermediatePair(key,value));  // adding the pair to the needed vector
     unlock_mutex(&jc->mutexes.emit2_mutex);
     uint64_t inc = 1 << 31;
     jc->ac += inc;
@@ -300,7 +333,7 @@ void emit2 (K2* key, V2* value, void* context){
 void emit3 (K3* key, V3* value, void* context){
     auto jc = (JobContext*) context;
     lock_mutex(&jc->mutexes.emit3_mutex);
-    jc->out_vec->push_back(OutputPair(key,value));
+    jc->out_vec.push_back(OutputPair(key,value));
     uint64_t inc = 1 << 31;
     jc->ac += inc;
     unlock_mutex(&jc->mutexes.emit3_mutex);
