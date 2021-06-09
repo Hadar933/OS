@@ -129,10 +129,10 @@ void* thread_cycle(void *arg){
 
     // MAP PHASE //
     auto *jc = (JobContext*) arg;
-    JobState stage = {MAP_STAGE, 0};
+    jc->j_state = {MAP_STAGE, 0};
     uint64_t phase_shift = one_64 << 62;
     jc->ac += phase_shift;
-    getJobState(jc,&stage);
+    //getJobState(jc,&stage);
     int input_size = jc->input_vec->size();
     uint64_t old_value = 0;
     uint64_t z  = pow(2,31) - 1;
@@ -191,7 +191,7 @@ JobHandle
 startMapReduceJob(const MapReduceClient &client, const InputVec &inputVec, OutputVec &outputVec, int multiThreadLevel) {
     auto *threads = new pthread_t(multiThreadLevel);
 
-    JobContext job_c = { .id_to_vec_map = {},
+    JobContext job_c = {
             .client = &client,
             .j_state = {UNDEFINED_STAGE,0},
             .input_vec = &inputVec,
@@ -230,17 +230,18 @@ startMapReduceJob(const MapReduceClient &client, const InputVec &inputVec, Outpu
  * @param context
  */
 void emit2 (K2* key, V2* value, void* context){
-    auto jc = (JobContext*) context;
-    lock_mutex(&jc->mutexes.emit2_mutex);
+    JobContext* jc = (JobContext*) context;
     pthread_t tid = pthread_self();
+    lock_mutex(&jc->mutexes.emit2_mutex);
     if (jc->id_to_vec_map.find(tid)==jc->id_to_vec_map.end()){ // no vector corresponds to self thread id
         IntermediateVec inter_vec;
-        jc->id_to_vec_map[tid] = inter_vec;
+        jc->id_to_vec_map.insert({tid, inter_vec});
     }
     jc->id_to_vec_map[tid].push_back(IntermediatePair(key,value));  // adding the pair to the needed vector
+    unlock_mutex(&jc->mutexes.emit2_mutex);
     uint64_t inc = 1 << 31;
     jc->ac += inc;
-    unlock_mutex(&jc->mutexes.emit2_mutex);
+
 }
 
 /**
