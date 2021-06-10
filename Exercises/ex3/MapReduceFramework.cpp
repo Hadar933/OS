@@ -83,6 +83,7 @@ void getJobState(JobHandle job, JobState* state) {
         int size = (jc->ac << two_64) >> thirty_three_64;
         jc->j_state.percentage = 100 * (float) processed / (float) size;
     } else if (jc->j_state.stage == REDUCE_STAGE) {
+     //   printf("accumulating length = %lu\n total length = %lu\n",jc->length_ac.load(),jc->total_inter_len);
         jc->j_state.percentage = 100 * (float) jc->length_ac.load() / (float) jc->total_inter_len;
     }
     state->stage=jc->j_state.stage;
@@ -203,7 +204,7 @@ void shuffle_phase(JobContext *jc) {
                 }
             }
         }
-        jc->total_inter_len += (jc->ac << two_64)>> thirty_three_64; // the middle is the entire pair count
+        jc->total_inter_len =+ (jc->ac << two_64)>> thirty_three_64; // the middle is the entire pair count
         unlock_mutex(&jc->mutexes.shuffle_mutex);
     }
 }
@@ -266,7 +267,6 @@ void* thread_cycle(void *arg){
     jc->barrier->barrier();
 
     reduce_phase(jc);
-// asdsad
 //    printf("Thread %lu finished reduce\n",pthread_self());
     return nullptr;
 }
