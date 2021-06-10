@@ -21,7 +21,7 @@ const uint64_t thirty_three_64 = 33;
 const uint64_t thirty_one_64 = 31;
 const uint64_t sixty_two_64 = 62;
 const uint64_t phase_shift= one_64 << sixty_two_64;
-const int mutex_num = 7;
+const int mutex_num = 8;
 
 /**
  * a struct of all relevant mutexes
@@ -34,6 +34,8 @@ typedef struct{
     pthread_mutex_t emit3_mutex;
     pthread_mutex_t cycle_mutex;
     pthread_mutex_t reduce_init_mutex;
+    pthread_mutex_t wait_for_job_mutex;
+
 }mutex_struct;
 
 /**
@@ -55,6 +57,7 @@ typedef struct JobContext{
     pthread_t *threads;
     uint64_t cur_inter_len;
     uint64_t total_inter_len;
+    std::atomic<uint64_t> length_ac;
     std::atomic<uint64_t> ac;
     mutex_struct mutexes;
 }JobContext;
@@ -79,7 +82,7 @@ void getJobState(JobHandle job, JobState* state) {
         int size = (jc->ac << two_64) >> thirty_three_64;
         jc->j_state.percentage = 100 * (float) processed / (float) size;
     } else if (jc->j_state.stage == REDUCE_STAGE) {
-        jc->j_state.percentage = 100 * (float) ((jc->ac << two_64)>>thirty_three_64) / (float) jc->total_inter_len;
+        jc->j_state.percentage = 100 * (float) jc->length_ac.load() / (float) jc->total_inter_len;
     }
     state->stage=jc->j_state.stage;
     state->percentage = jc->j_state.percentage;
@@ -90,9 +93,8 @@ void getJobState(JobHandle job, JobState* state) {
  * @param mutex
  */
 void lock_mutex(pthread_mutex_t *mutex){
-    int ret = pthread_mutex_lock(mutex); // TODO: remove this when fixed couldn't lock mutex problem (ret = 22)
-    if (ret != 0){
-        std::cerr << MUTEX_LOCK_ERR << ret << std::endl;
+    if (pthread_mutex_lock(mutex) != 0){
+        std::cerr << MUTEX_LOCK_ERR << std::endl;
         exit(EXIT_FAILURE);
     }
 }
@@ -225,6 +227,7 @@ void reduce_phase(JobContext *jc) {
     while((jc->ac << two_64) >> thirty_three_64 < ((jc->ac)&z)){ // mid ac smaller then right part (queue size)
         lock_mutex(&jc->mutexes.reduce_mutex);
         int q_size = jc->queue.size();
+        if(q_size == 0){ break;}
         IntermediateVec v;
         v = jc->queue[q_size-1];
         jc->cur_inter_len = v.size();
@@ -242,14 +245,13 @@ void reduce_phase(JobContext *jc) {
  * @return
  */
 void* thread_cycle(void *arg){
-    JobContext *jc = (JobContext*) arg;
-
+    auto *jc = (JobContext*) arg;
     lock_mutex(&jc->mutexes.cycle_mutex);
-    std::vector<IntermediatePair> *cur_vec = new std::vector<IntermediatePair>();
+    auto *cur_vec = new std::vector<IntermediatePair>();
     if(jc->id_to_vec_map.empty()){
         jc->zero_thread = pthread_self();
     }
-    jc->id_to_vec_map.insert({pthread_self(),cur_vec});
+    jc->id_to_vec_map.insert({pthread_self(),cur_vec}); // adding zero thread
     unlock_mutex(&jc->mutexes.cycle_mutex);
 
     map_phase(jc);
@@ -272,7 +274,7 @@ void* thread_cycle(void *arg){
 JobHandle
 startMapReduceJob(const MapReduceClient &client, const InputVec &inputVec, OutputVec &outputVec, int multiThreadLevel) {
     pthread_mutex_t *mutexes = (pthread_mutex_t*) malloc(mutex_num * sizeof(pthread_mutex_t));
-    pthread_t *threads = (pthread_t*) malloc(multiThreadLevel * sizeof(pthread_t));
+    pthread_t *threads = (pthread_t*) malloc(sizeof(pthread_t)*(multiThreadLevel) );
     auto id_to_vec_map = new std::map<pthread_t,IntermediateVec*>;
     auto key_to_vec_map = new std::map<K2*,IntermediateVec>;
     auto queue = new std::vector<IntermediateVec>;
@@ -294,6 +296,7 @@ startMapReduceJob(const MapReduceClient &client, const InputVec &inputVec, Outpu
             .threads = threads,
             .cur_inter_len = 0,
             .total_inter_len = 0,
+            .length_ac{0},
             .ac{0},
             .mutexes = {
                     .map_mutex = mutexes[0],
@@ -302,7 +305,8 @@ startMapReduceJob(const MapReduceClient &client, const InputVec &inputVec, Outpu
                     .reduce_mutex = mutexes[3],
                     .emit3_mutex = mutexes[4],
                     .cycle_mutex = mutexes[5],
-                    .reduce_init_mutex = mutexes[6]
+                    .reduce_init_mutex = mutexes[6],
+                    .wait_for_job_mutex = mutexes[7]
             }
     };
 
@@ -354,8 +358,8 @@ void emit3 (K3* key, V3* value, void* context){
     auto jc = (JobContext*) context;
     lock_mutex(&jc->mutexes.emit3_mutex);
     jc->out_vec.push_back(OutputPair(key,value));
-    uint64_t cur_shifter_len = jc->cur_inter_len << thirty_one_64; // TODO: should be the size of the vector
-    jc->ac += cur_shifter_len;
+    uint64_t cur_shifter_len = jc->cur_inter_len ; // TODO: should be the size of the vector
+    jc->length_ac += cur_shifter_len;
     unlock_mutex(&jc->mutexes.emit3_mutex);
 }
 
@@ -363,15 +367,24 @@ void emit3 (K3* key, V3* value, void* context){
  * uses pthread_join to wait for jobs.
  * @param job
  */
-void waitForJob(JobHandle job){
-    auto jc = (JobContext*) job;
-    if (!jc->already_waited){
+void waitForJob(JobHandle job) {
+    auto jc = (JobContext *) job;
+    lock_mutex(&jc->mutexes.wait_for_job_mutex);
+    if (!jc->already_waited) {
         for (int i = 0; i < jc->num_threads; ++i) {
-            pthread_join(jc->threads[i], nullptr);
-        }
+                pthread_t tid = jc->threads[i];
+                int ret = pthread_join(tid, nullptr); // TODO: rearrange when works
+                if (ret != 0){
+                    std::cout <<"error " << ret << std::endl;
+                }
+            }
         jc->already_waited = true;
     }
+    unlock_mutex(&jc->mutexes.wait_for_job_mutex);
+
 }
+
+
 
 /**
  * destroys all the mutexes
@@ -383,6 +396,10 @@ void destroy_all_mutex(JobContext* jc){
     pthread_mutex_destroy(&jc->mutexes.shuffle_mutex);
     pthread_mutex_destroy(&jc->mutexes.reduce_mutex);
     pthread_mutex_destroy(&jc->mutexes.emit3_mutex);
+    pthread_mutex_destroy(&jc->mutexes.cycle_mutex);
+    pthread_mutex_destroy(&jc->mutexes.reduce_init_mutex);
+    pthread_mutex_destroy(&jc->mutexes.wait_for_job_mutex);
+
 }
 
 /**
@@ -390,8 +407,8 @@ void destroy_all_mutex(JobContext* jc){
  * @param job
  */
 void closeJobHandle(JobHandle job){
-    auto jc = (JobContext*) job;
     waitForJob(job);
+    auto jc = (JobContext*) job;
     destroy_all_mutex(jc);
     delete jc->barrier;
 }
