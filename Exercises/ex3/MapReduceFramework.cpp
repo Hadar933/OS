@@ -14,6 +14,7 @@
 #define MUTEX_LOCK_ERR "system error: couldn't lock mutex"
 #define MUTEX_UNLOCK_ERR "system error: couldn't unlock mutex"
 
+// TODO: remove all comments
 
 const uint64_t one_64 =1;
 const uint64_t two_64 = 2;
@@ -214,14 +215,14 @@ void shuffle_phase(JobContext *jc) {
 void reduce_phase(JobContext *jc) {
     jc->j_state = {REDUCE_STAGE, 0};
 //    jc->ac += phase_shift;
-    lock_mutex(&jc->mutexes.reduce_init_mutex);
+    lock_mutex(&jc->mutexes.reduce_mutex);
     if (jc->first_iter){
         jc->first_iter = false;
         uint64_t size = ((jc->ac << two_64) >> thirty_three_64) << thirty_one_64; // setting the middle section to zero
         jc->ac -= size;
         convert_map_type(jc);
     }
-    unlock_mutex(&jc->mutexes.reduce_init_mutex);
+    unlock_mutex(&jc->mutexes.reduce_mutex);
 
     uint64_t z= pow(2, 31) - 1;
     while((jc->ac << two_64) >> thirty_three_64 < ((jc->ac)&z)){ // mid ac smaller then right part (queue size)
@@ -236,6 +237,7 @@ void reduce_phase(JobContext *jc) {
         jc->client.reduce(&v,jc);
         unlock_mutex(&jc->mutexes.reduce_mutex);
     }
+
 }
 
 
@@ -266,6 +268,7 @@ void* thread_cycle(void *arg){
 
     reduce_phase(jc);
 
+//    printf("Thread %lu finished reduce\n",pthread_self());
     return nullptr;
 }
 
@@ -358,7 +361,7 @@ void emit3 (K3* key, V3* value, void* context){
     auto jc = (JobContext*) context;
     lock_mutex(&jc->mutexes.emit3_mutex);
     jc->out_vec.push_back(OutputPair(key,value));
-    uint64_t cur_shifter_len = jc->cur_inter_len ; // TODO: should be the size of the vector
+    uint64_t cur_shifter_len = jc->cur_inter_len ;
     jc->length_ac += cur_shifter_len;
     unlock_mutex(&jc->mutexes.emit3_mutex);
 }
