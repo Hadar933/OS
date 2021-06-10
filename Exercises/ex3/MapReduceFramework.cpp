@@ -237,7 +237,6 @@ void reduce_phase(JobContext *jc) {
         jc->client.reduce(&v,jc);
         unlock_mutex(&jc->mutexes.reduce_mutex);
     }
-
 }
 
 
@@ -267,7 +266,7 @@ void* thread_cycle(void *arg){
     jc->barrier->barrier();
 
     reduce_phase(jc);
-
+// asdsad
 //    printf("Thread %lu finished reduce\n",pthread_self());
     return nullptr;
 }
