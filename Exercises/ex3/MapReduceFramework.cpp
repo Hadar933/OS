@@ -307,13 +307,10 @@ startMapReduceJob(const MapReduceClient &client, const InputVec &inputVec, Outpu
             std::cerr << THREAD_INIT_ERR << std::endl;
             exit(EXIT_FAILURE);
         }
-//        if (i==0){
-//            job_c->zero_thread = pthread_self(); // distinguishing the first thread, which will do SHUFFLE
-//        }
     }
     unlock_mutex(&init_mutex);
     pthread_mutex_destroy(&init_mutex);
-    auto jc = static_cast<JobHandle>(&job_c);
+    auto jc = static_cast<JobHandle>(job_c);
     return jc;
 }
 
