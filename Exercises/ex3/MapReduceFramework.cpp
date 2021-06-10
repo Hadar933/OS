@@ -53,15 +53,17 @@ typedef struct JobContext{
     bool already_waited;
     bool first_iter;
     pthread_t *threads;
+    uint64_t cur_inter_len;
+    uint64_t total_inter_len;
     std::atomic<uint64_t> ac;
     mutex_struct mutexes;
 }JobContext;
 
 
 /**
- * this is actually a setter for a new state
+ * assings state with the stage and percentage of the job.
  * @param job
- * @param state - new state to assign
+ * @param state - new state to assign to
  */
 void getJobState(JobHandle job, JobState* state) {
     auto jc = (JobContext *) job;
@@ -77,10 +79,10 @@ void getJobState(JobHandle job, JobState* state) {
         int size = (jc->ac << two_64) >> thirty_three_64;
         jc->j_state.percentage = 100 * (float) processed / (float) size;
     } else if (jc->j_state.stage == REDUCE_STAGE) {
-        int size = (jc->ac << two_64) >> thirty_three_64;
-        jc->j_state.percentage = 100 * (float) size / (float) jc->key_to_vec_map.size();
+        jc->j_state.percentage = 100 * (float) ((jc->ac << two_64)>>thirty_three_64) / (float) jc->total_inter_len;
     }
-    jc->j_state.stage = state->stage;
+    state->stage=jc->j_state.stage;
+    state->percentage = jc->j_state.percentage;
 }
 
 /**
@@ -198,6 +200,7 @@ void shuffle_phase(JobContext *jc) {
                 }
             }
         }
+        jc->total_inter_len += (jc->ac << two_64)>> thirty_three_64; // the middle is the entire pair count
         unlock_mutex(&jc->mutexes.shuffle_mutex);
     }
 }
@@ -224,10 +227,11 @@ void reduce_phase(JobContext *jc) {
         int q_size = jc->queue.size();
         IntermediateVec v;
         v = jc->queue[q_size-1];
+        jc->cur_inter_len = v.size();
         jc->queue.pop_back();
         jc->ac += one_64 << thirty_one_64; // +1 to middle section
-        unlock_mutex(&jc->mutexes.reduce_mutex);
         jc->client.reduce(&v,jc);
+        unlock_mutex(&jc->mutexes.reduce_mutex);
     }
 }
 
@@ -288,6 +292,8 @@ startMapReduceJob(const MapReduceClient &client, const InputVec &inputVec, Outpu
             .already_waited = false,
             .first_iter = true,
             .threads = threads,
+            .cur_inter_len = 0,
+            .total_inter_len = 0,
             .ac{0},
             .mutexes = {
                     .map_mutex = mutexes[0],
@@ -329,6 +335,7 @@ void emit2 (K2* key, V2* value, void* context){
         IntermediateVec *inter_vec;
         jc->id_to_vec_map.insert({tid, inter_vec});
     }
+    //TODO: maybe create the pair here and push back in a separate line ?
     jc->id_to_vec_map[tid]->push_back(IntermediatePair(key,value));  // adding the pair to the needed vector
     unlock_mutex(&jc->mutexes.emit2_mutex);
     uint64_t inc = one_64 << thirty_one_64;
@@ -347,8 +354,8 @@ void emit3 (K3* key, V3* value, void* context){
     auto jc = (JobContext*) context;
     lock_mutex(&jc->mutexes.emit3_mutex);
     jc->out_vec.push_back(OutputPair(key,value));
-    uint64_t inc = one_64 << thirty_one_64; // TODO: should be the size of the vector
-    jc->ac += inc;
+    uint64_t cur_shifter_len = jc->cur_inter_len << thirty_one_64; // TODO: should be the size of the vector
+    jc->ac += cur_shifter_len;
     unlock_mutex(&jc->mutexes.emit3_mutex);
 }
 
