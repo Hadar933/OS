@@ -76,32 +76,6 @@ void print_log(std::string msg,pthread_t tid, JobContext *jc){
     std::cout << msg << tid << std::endl;
     pthread_mutex_unlock(&jc->mutexes.log_print_mutex);
 }
-/**
- * assings state with the stage and percentage of the job.
- * @param job
- * @param state - new state to assign to
- */
-void getJobState(JobHandle job, JobState* state) {
-    auto jc = (JobContext *) job;
-    if (jc->j_state.stage == MAP_STAGE) {
-        uint64_t z = pow(2, 31) - 1;
-        unsigned long processed = jc->ac & z;
-        jc->j_state.percentage = 100 * (float) processed / (float) jc->input_vec.size();
-    } else if (jc->j_state.stage == SHUFFLE_STAGE) {
-        int processed = 0;
-        for (const auto &vecMap : jc->key_to_vec_map) {
-            processed += vecMap.second.size();
-        }
-        int size = (jc->ac << two_64) >> thirty_three_64;
-//        printf("processed = %d, size = %d, percentage = ",processed,size,100*processed/size);
-        jc->j_state.percentage = 100 * (float) processed / (float) size;
-    } else if (jc->j_state.stage == REDUCE_STAGE) {
-     //   printf("accumulating length = %lu\n total length = %lu\n",jc->length_ac.load(),jc->total_inter_len);
-        jc->j_state.percentage = 100 * (float) jc->length_ac.load() / (float) jc->total_inter_len;
-    }
-    state->stage=jc->j_state.stage;
-    state->percentage = jc->j_state.percentage;
-}
 
 /**
  * locks a given mutex
@@ -125,6 +99,49 @@ void unlock_mutex(pthread_mutex_t *mutex){
         exit(EXIT_FAILURE);
     }
 }
+
+/**
+ * assings state with the stage and percentage of the job.
+ * @param job
+ * @param state - new state to assign to
+ */
+void getJobState(JobHandle job, JobState* state) {
+    auto jc = (JobContext *) job;
+    unsigned long processed = 0;
+    unsigned long size = 0;
+    float percent = 0;
+
+    lock_mutex(&jc->mutexes.log_print_mutex);
+    if(jc->j_state.stage== UNDEFINED_STAGE){
+        jc->j_state.percentage = 0;
+    }
+    else{
+        if (jc->j_state.stage == MAP_STAGE) {
+            uint64_t z = pow(2, 31) - 1;
+            processed = jc->ac;
+            processed = processed & z;
+            size = jc->input_vec.size();
+            percent = 100 * (float) processed /(float) size;
+        } else if (jc->j_state.stage == SHUFFLE_STAGE) {
+            for (const auto &vecMap : jc->key_to_vec_map) {
+                processed += vecMap.second.size();
+            }
+            size = (jc->ac << two_64) >> thirty_three_64;
+            percent =100 * (float) processed /(float) size;
+        } else if (jc->j_state.stage == REDUCE_STAGE) {
+            processed = jc->length_ac.load();
+            size = jc->total_inter_len;
+            percent = 100 * (float) processed /(float) size;
+        }
+        jc->j_state.percentage = percent;
+        state->percentage = jc->j_state.percentage;
+//        std:: cout << "(MY PRINT) stage=" << jc->j_state.stage <<", "<< processed << "/" << size << ", " << percent <<"%" <<std::endl;
+    }
+    state->stage=jc->j_state.stage;
+    unlock_mutex(&jc->mutexes.log_print_mutex);
+
+}
+
 
 
 /**
@@ -251,10 +268,6 @@ void reduce_phase(JobContext *jc) {
         jc->client.reduce(&v,jc);
     }
     unlock_mutex(&jc->mutexes.reduce_mutex);
-
-//    print_log("@@@@@@@@@@\n passed INSIDE REDUCE ",pthread_self(),jc);
-
-
 }
 
 
@@ -277,23 +290,13 @@ void* thread_cycle(void *arg){
 
     sort_phase(jc);
 
-//    print_log("@@@@@@@@@@\nThread passed MAP & SORT ",pthread_self(),jc);
-
     jc->barrier->barrier();
-
-//    print_log("@@@@@@@@@@\nThread passed BARRIER1 ",pthread_self(),jc);
 
     shuffle_phase(jc);
 
-//    print_log("@@@@@@@@@@\nThread passed SHUFFLE ",pthread_self(),jc);
-
     jc->barrier->barrier();
 
-//    print_log("@@@@@@@@@@\nThread passed BARRIER2 ",pthread_self(),jc);
-
     reduce_phase(jc);
-
-    print_log("@@@@@@@@@@\nThread passed REDUCE ",pthread_self(),jc);
 
     return nullptr;
 }
@@ -400,19 +403,15 @@ void emit3 (K3* key, V3* value, void* context){
 void waitForJob(JobHandle job) {
     auto jc = (JobContext *) job;
     lock_mutex(&jc->mutexes.wait_for_job_mutex);
-//    printf("\n@@@@@@@@@@\nREACHED WAIT-FOR-JOB\n@@@@@@@@@@\n");
 
     if (!jc->already_waited) {
         for (int i = 0; i < jc->num_threads; ++i) {
                 pthread_t tid = jc->threads[i];
-//                std::cout << "\n@@@@@@@@@@\nTrying to join " << tid << " \n@@@@@@@@@@\n" << std::endl;
                 int ret = pthread_join(tid, nullptr);
                 if (ret!=0){
                     std::cout <<THREAD_JOIN_ERR << " " << tid << "" << ret << std::endl;
                     exit(EXIT_FAILURE);
                 }
-//                std::cout << "\n@@@@@@@@@@\n" << tid << " JOINED successfully\n@@@@@@@@@@\n" << std::endl;
-
         }
         jc->already_waited = true;
     }
@@ -447,4 +446,5 @@ void closeJobHandle(JobHandle job){
     auto jc = (JobContext*) job;
     destroy_all_mutex(jc);
     delete jc->barrier;
+    jc->
 }
