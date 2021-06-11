@@ -13,6 +13,8 @@
 #define THREAD_INIT_ERR "system error: couldn't initialize thread"
 #define MUTEX_LOCK_ERR "system error: couldn't lock mutex"
 #define MUTEX_UNLOCK_ERR "system error: couldn't unlock mutex"
+#define THREAD_JOIN_ERR "system error: couldn't join thread"
+
 
 // TODO: remove all comments
 
@@ -22,7 +24,7 @@ const uint64_t thirty_three_64 = 33;
 const uint64_t thirty_one_64 = 31;
 const uint64_t sixty_two_64 = 62;
 const uint64_t phase_shift= one_64 << sixty_two_64;
-const int mutex_num = 8;
+const int mutex_num = 9;
 
 /**
  * a struct of all relevant mutexes
@@ -36,6 +38,7 @@ typedef struct{
     pthread_mutex_t cycle_mutex;
     pthread_mutex_t reduce_init_mutex;
     pthread_mutex_t wait_for_job_mutex;
+    pthread_mutex_t log_print_mutex;
 
 }mutex_struct;
 
@@ -65,6 +68,15 @@ typedef struct JobContext{
 
 
 /**
+ * prints a message wrapped with a mutex
+ * @param msg
+ */
+void print_log(std::string msg,pthread_t tid, JobContext *jc){
+    pthread_mutex_lock(&jc->mutexes.log_print_mutex);
+    std::cout << msg << tid << std::endl;
+    pthread_mutex_unlock(&jc->mutexes.log_print_mutex);
+}
+/**
  * assings state with the stage and percentage of the job.
  * @param job
  * @param state - new state to assign to
@@ -81,6 +93,7 @@ void getJobState(JobHandle job, JobState* state) {
             processed += vecMap.second.size();
         }
         int size = (jc->ac << two_64) >> thirty_three_64;
+//        printf("processed = %d, size = %d, percentage = ",processed,size,100*processed/size);
         jc->j_state.percentage = 100 * (float) processed / (float) size;
     } else if (jc->j_state.stage == REDUCE_STAGE) {
      //   printf("accumulating length = %lu\n total length = %lu\n",jc->length_ac.load(),jc->total_inter_len);
@@ -106,8 +119,7 @@ void lock_mutex(pthread_mutex_t *mutex){
  * @param mutex
  */
 void unlock_mutex(pthread_mutex_t *mutex){
-    /*
-     */
+
     if (pthread_mutex_unlock(mutex) != 0){
         std::cerr << MUTEX_UNLOCK_ERR << std::endl;
         exit(EXIT_FAILURE);
@@ -225,9 +237,10 @@ void reduce_phase(JobContext *jc) {
     }
     unlock_mutex(&jc->mutexes.reduce_mutex);
 
+    lock_mutex(&jc->mutexes.reduce_mutex);
+
     uint64_t z= pow(2, 31) - 1;
     while((jc->ac << two_64) >> thirty_three_64 < ((jc->ac)&z)){ // mid ac smaller then right part (queue size)
-        lock_mutex(&jc->mutexes.reduce_mutex);
         int q_size = jc->queue.size();
         if(q_size == 0){ break;}
         IntermediateVec v;
@@ -236,8 +249,12 @@ void reduce_phase(JobContext *jc) {
         jc->queue.pop_back();
         jc->ac += one_64 << thirty_one_64; // +1 to middle section
         jc->client.reduce(&v,jc);
-        unlock_mutex(&jc->mutexes.reduce_mutex);
     }
+    unlock_mutex(&jc->mutexes.reduce_mutex);
+
+//    print_log("@@@@@@@@@@\n passed INSIDE REDUCE ",pthread_self(),jc);
+
+
 }
 
 
@@ -247,6 +264,7 @@ void reduce_phase(JobContext *jc) {
  * @return
  */
 void* thread_cycle(void *arg){
+
     auto *jc = (JobContext*) arg;
     lock_mutex(&jc->mutexes.cycle_mutex);
     auto *cur_vec = new std::vector<IntermediatePair>();
@@ -255,19 +273,28 @@ void* thread_cycle(void *arg){
     }
     jc->id_to_vec_map.insert({pthread_self(),cur_vec}); // adding zero thread
     unlock_mutex(&jc->mutexes.cycle_mutex);
-
     map_phase(jc);
 
     sort_phase(jc);
 
+//    print_log("@@@@@@@@@@\nThread passed MAP & SORT ",pthread_self(),jc);
+
     jc->barrier->barrier();
+
+//    print_log("@@@@@@@@@@\nThread passed BARRIER1 ",pthread_self(),jc);
 
     shuffle_phase(jc);
 
+//    print_log("@@@@@@@@@@\nThread passed SHUFFLE ",pthread_self(),jc);
+
     jc->barrier->barrier();
 
+//    print_log("@@@@@@@@@@\nThread passed BARRIER2 ",pthread_self(),jc);
+
     reduce_phase(jc);
-//    printf("Thread %lu finished reduce\n",pthread_self());
+
+    print_log("@@@@@@@@@@\nThread passed REDUCE ",pthread_self(),jc);
+
     return nullptr;
 }
 
@@ -308,7 +335,8 @@ startMapReduceJob(const MapReduceClient &client, const InputVec &inputVec, Outpu
                     .emit3_mutex = mutexes[4],
                     .cycle_mutex = mutexes[5],
                     .reduce_init_mutex = mutexes[6],
-                    .wait_for_job_mutex = mutexes[7]
+                    .wait_for_job_mutex = mutexes[7],
+                    .log_print_mutex = mutexes[8]
             }
     };
 
@@ -372,14 +400,20 @@ void emit3 (K3* key, V3* value, void* context){
 void waitForJob(JobHandle job) {
     auto jc = (JobContext *) job;
     lock_mutex(&jc->mutexes.wait_for_job_mutex);
+//    printf("\n@@@@@@@@@@\nREACHED WAIT-FOR-JOB\n@@@@@@@@@@\n");
+
     if (!jc->already_waited) {
         for (int i = 0; i < jc->num_threads; ++i) {
                 pthread_t tid = jc->threads[i];
-                int ret = pthread_join(tid, nullptr); // TODO: rearrange when works
-                if (ret != 0){
-                    std::cout <<"error " << ret << std::endl;
+//                std::cout << "\n@@@@@@@@@@\nTrying to join " << tid << " \n@@@@@@@@@@\n" << std::endl;
+                int ret = pthread_join(tid, nullptr);
+                if (ret!=0){
+                    std::cout <<THREAD_JOIN_ERR << " " << tid << "" << ret << std::endl;
+                    exit(EXIT_FAILURE);
                 }
-            }
+//                std::cout << "\n@@@@@@@@@@\n" << tid << " JOINED successfully\n@@@@@@@@@@\n" << std::endl;
+
+        }
         jc->already_waited = true;
     }
     unlock_mutex(&jc->mutexes.wait_for_job_mutex);
@@ -401,7 +435,7 @@ void destroy_all_mutex(JobContext* jc){
     pthread_mutex_destroy(&jc->mutexes.cycle_mutex);
     pthread_mutex_destroy(&jc->mutexes.reduce_init_mutex);
     pthread_mutex_destroy(&jc->mutexes.wait_for_job_mutex);
-
+    pthread_mutex_destroy(&jc->mutexes.log_print_mutex);
 }
 
 /**
