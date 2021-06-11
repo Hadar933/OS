@@ -8,38 +8,38 @@
 		<Option virtualFolders="CMake Files\;"/>
 		<Build>
 			<Target title="all">
-				<Option working_dir="/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex3/cmake-build-debug"/>
+				<Option working_dir="/cs/usr/shulik10/OS/OS/Exercises/ex3/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j6 -f &quot;/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex3/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
-					<CompileFile command="/usr/bin/make -j6 -f &quot;/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex3/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j6 -f &quot;/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex3/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j6 -f &quot;/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex3/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j6 -f &quot;/cs/usr/shulik10/OS/OS/Exercises/ex3/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j6 -f &quot;/cs/usr/shulik10/OS/OS/Exercises/ex3/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j6 -f &quot;/cs/usr/shulik10/OS/OS/Exercises/ex3/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j6 -f &quot;/cs/usr/shulik10/OS/OS/Exercises/ex3/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="rebuild_cache">
-				<Option working_dir="/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex3/cmake-build-debug"/>
+				<Option working_dir="/cs/usr/shulik10/OS/OS/Exercises/ex3/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j6 -f &quot;/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex3/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
-					<CompileFile command="/usr/bin/make -j6 -f &quot;/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex3/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j6 -f &quot;/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex3/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j6 -f &quot;/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex3/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j6 -f &quot;/cs/usr/shulik10/OS/OS/Exercises/ex3/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j6 -f &quot;/cs/usr/shulik10/OS/OS/Exercises/ex3/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j6 -f &quot;/cs/usr/shulik10/OS/OS/Exercises/ex3/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j6 -f &quot;/cs/usr/shulik10/OS/OS/Exercises/ex3/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="edit_cache">
-				<Option working_dir="/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex3/cmake-build-debug"/>
+				<Option working_dir="/cs/usr/shulik10/OS/OS/Exercises/ex3/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j6 -f &quot;/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex3/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
-					<CompileFile command="/usr/bin/make -j6 -f &quot;/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex3/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j6 -f &quot;/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex3/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j6 -f &quot;/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex3/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j6 -f &quot;/cs/usr/shulik10/OS/OS/Exercises/ex3/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j6 -f &quot;/cs/usr/shulik10/OS/OS/Exercises/ex3/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j6 -f &quot;/cs/usr/shulik10/OS/OS/Exercises/ex3/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j6 -f &quot;/cs/usr/shulik10/OS/OS/Exercises/ex3/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="ex3">
-				<Option output="/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex3/cmake-build-debug/ex3" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex3/cmake-build-debug"/>
+				<Option output="/cs/usr/shulik10/OS/OS/Exercises/ex3/cmake-build-debug/ex3" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/cs/usr/shulik10/OS/OS/Exercises/ex3/cmake-build-debug"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
 				<Option compiler="gcc"/>
@@ -53,15 +53,15 @@
 					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j6 -f &quot;/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex3/cmake-build-debug/Makefile&quot;  VERBOSE=1 ex3"/>
-					<CompileFile command="/usr/bin/make -j6 -f &quot;/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex3/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j6 -f &quot;/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex3/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j6 -f &quot;/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex3/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j6 -f &quot;/cs/usr/shulik10/OS/OS/Exercises/ex3/cmake-build-debug/Makefile&quot;  VERBOSE=1 ex3"/>
+					<CompileFile command="/usr/bin/make -j6 -f &quot;/cs/usr/shulik10/OS/OS/Exercises/ex3/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j6 -f &quot;/cs/usr/shulik10/OS/OS/Exercises/ex3/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j6 -f &quot;/cs/usr/shulik10/OS/OS/Exercises/ex3/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="ex3/fast">
-				<Option output="/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex3/cmake-build-debug/ex3" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex3/cmake-build-debug"/>
+				<Option output="/cs/usr/shulik10/OS/OS/Exercises/ex3/cmake-build-debug/ex3" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/cs/usr/shulik10/OS/OS/Exercises/ex3/cmake-build-debug"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
 				<Option compiler="gcc"/>
@@ -75,35 +75,35 @@
 					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j6 -f &quot;/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex3/cmake-build-debug/Makefile&quot;  VERBOSE=1 ex3/fast"/>
-					<CompileFile command="/usr/bin/make -j6 -f &quot;/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex3/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j6 -f &quot;/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex3/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j6 -f &quot;/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex3/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j6 -f &quot;/cs/usr/shulik10/OS/OS/Exercises/ex3/cmake-build-debug/Makefile&quot;  VERBOSE=1 ex3/fast"/>
+					<CompileFile command="/usr/bin/make -j6 -f &quot;/cs/usr/shulik10/OS/OS/Exercises/ex3/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j6 -f &quot;/cs/usr/shulik10/OS/OS/Exercises/ex3/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j6 -f &quot;/cs/usr/shulik10/OS/OS/Exercises/ex3/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex3/Atomic/atomicdemo.cpp">
+		<Unit filename="/cs/usr/shulik10/OS/OS/Exercises/ex3/Atomic/atomicdemo.cpp">
 			<Option target="ex3"/>
 		</Unit>
-		<Unit filename="/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex3/Barrier/Barrier.cpp">
+		<Unit filename="/cs/usr/shulik10/OS/OS/Exercises/ex3/Barrier/Barrier.cpp">
 			<Option target="ex3"/>
 		</Unit>
-		<Unit filename="/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex3/Barrier/Barrier.h">
+		<Unit filename="/cs/usr/shulik10/OS/OS/Exercises/ex3/Barrier/Barrier.h">
 			<Option target="ex3"/>
 		</Unit>
-		<Unit filename="/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex3/MapReduceClient.h">
+		<Unit filename="/cs/usr/shulik10/OS/OS/Exercises/ex3/MapReduceClient.h">
 			<Option target="ex3"/>
 		</Unit>
-		<Unit filename="/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex3/MapReduceFramework.cpp">
+		<Unit filename="/cs/usr/shulik10/OS/OS/Exercises/ex3/MapReduceFramework.cpp">
 			<Option target="ex3"/>
 		</Unit>
-		<Unit filename="/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex3/MapReduceFramework.h">
+		<Unit filename="/cs/usr/shulik10/OS/OS/Exercises/ex3/MapReduceFramework.h">
 			<Option target="ex3"/>
 		</Unit>
-		<Unit filename="/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex3/Sample_Client/SampleClient.cpp">
+		<Unit filename="/cs/usr/shulik10/OS/OS/Exercises/ex3/Sample_Client/SampleClient.cpp">
 			<Option target="ex3"/>
 		</Unit>
-		<Unit filename="/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex3/CMakeLists.txt">
+		<Unit filename="/cs/usr/shulik10/OS/OS/Exercises/ex3/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
 		</Unit>
 	</Project>

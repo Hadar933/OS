@@ -8,8 +8,8 @@
 #include "Barrier/Barrier.h"
 #include <pthread.h>
 #include <iostream>
-#include "math.h"
-
+#include <cmath>
+#include <bitset>
 #define THREAD_INIT_ERR "system error: couldn't initialize thread"
 #define MUTEX_LOCK_ERR "system error: couldn't lock mutex"
 #define MUTEX_UNLOCK_ERR "system error: couldn't unlock mutex"
@@ -23,8 +23,11 @@ const uint64_t two_64 = 2;
 const uint64_t thirty_three_64 = 33;
 const uint64_t thirty_one_64 = 31;
 const uint64_t sixty_two_64 = 62;
-const uint64_t phase_shift= one_64 << sixty_two_64;
+
 const int mutex_num = 9;
+const int64_t first_31 = (uint64_t)1 << 31;
+
+
 
 /**
  * a struct of all relevant mutexes
@@ -39,7 +42,6 @@ typedef struct{
     pthread_mutex_t reduce_init_mutex;
     pthread_mutex_t wait_for_job_mutex;
     pthread_mutex_t log_print_mutex;
-
 }mutex_struct;
 
 /**
@@ -60,11 +62,17 @@ typedef struct JobContext{
     bool first_iter;
     pthread_t *threads;
     uint64_t cur_inter_len;
-    uint64_t total_inter_len;
     std::atomic<uint64_t> length_ac;
     std::atomic<uint64_t> ac;
+    std::atomic<uint64_t> trying;
     mutex_struct mutexes;
 }JobContext;
+
+void update_trying(JobContext* jc, const int stage, const int jobs_todo)
+{
+    unsigned long long new_counter = (first_31 * stage + jobs_todo) << 31;
+    jc->trying = new_counter;
+}
 
 
 /**
@@ -83,25 +91,14 @@ void print_log(std::string msg,pthread_t tid, JobContext *jc){
  */
 void getJobState(JobHandle job, JobState* state) {
     auto jc = (JobContext *) job;
-    if (jc->j_state.stage == MAP_STAGE) {
-        uint64_t z = pow(2, 31) - 1;
-        unsigned long processed = jc->ac & z;
-        jc->j_state.percentage = 100 * (float) processed / (float) jc->input_vec.size();
-    } else if (jc->j_state.stage == SHUFFLE_STAGE) {
-        int processed = 0;
-        for (const auto &vecMap : jc->key_to_vec_map) {
-            processed += vecMap.second.size();
-        }
-        int size = (jc->ac << two_64) >> thirty_three_64;
-//        printf("processed = %d, size = %d, percentage = ",processed,size,100*processed/size);
-        jc->j_state.percentage = 100 * (float) processed / (float) size;
-    } else if (jc->j_state.stage == REDUCE_STAGE) {
-     //   printf("accumulating length = %lu\n total length = %lu\n",jc->length_ac.load(),jc->total_inter_len);
-        jc->j_state.percentage = 100 * (float) jc->length_ac.load() / (float) jc->total_inter_len;
-    }
-    state->stage=jc->j_state.stage;
-    state->percentage = jc->j_state.percentage;
+    unsigned long long atomic_c = jc->trying.load();
+    unsigned long jobs_done = atomic_c % first_31;
+    unsigned long jobs_to_do = (atomic_c << two_64) >> thirty_three_64;
+    state->stage = (stage_t) (atomic_c >> sixty_two_64);
+    state->percentage = ((float) jobs_done / (float)jobs_to_do)*100;
 }
+
+
 
 /**
  * locks a given mutex
@@ -150,13 +147,14 @@ void map_phase(JobContext *jc) {
     uint64_t old_value= 0;
     uint64_t z= pow(2, 31) - 1;
     int input_size = jc->input_vec.size();
-    jc->j_state = {MAP_STAGE, 0};
+    //jc->j_state = {MAP_STAGE, 0};
 //    jc->ac += phase_shift; // TODO: changed from 00 to 10 instead of 01
     while ((old_value & z) < input_size-1){
         lock_mutex(&jc->mutexes.map_mutex);
         old_value = jc->ac.load();
         if((old_value & z) < input_size){
             jc->ac++;
+            jc->trying += 1;
             InputPair pair = jc->input_vec[(int) (old_value & z)];
             jc->client.map(pair.first,pair.second,jc);
             unlock_mutex(&jc->mutexes.map_mutex);
@@ -182,11 +180,13 @@ void sort_phase(JobContext *jc) {
  */
 void shuffle_phase(JobContext *jc) {
     uint64_t input_size = jc->input_vec.size();
-    jc->j_state = {SHUFFLE_STAGE, 0};
+    //jc->j_state = {SHUFFLE_STAGE, 0};
 //    jc->ac += phase_shift; // TODO: doesnt really work
 
     if (pthread_self()==jc->zero_thread){ // only the 0th thread shuffles.
+
         lock_mutex(&jc->mutexes.shuffle_mutex);
+        update_trying(jc, 2, jc->id_to_vec_map.size());
         jc->ac -= input_size;
         for(auto &tid: jc->id_to_vec_map){
             IntermediateVec *cur_vec = tid.second;
@@ -196,6 +196,7 @@ void shuffle_phase(JobContext *jc) {
                 bool found_item = false;
                 if (jc->key_to_vec_map.empty()){
                     jc->key_to_vec_map[cur_pair.first].push_back(cur_pair);
+                    //jc->trying++;
                     (jc->ac)++;  // count number of vectors in queue
                     continue;
                 }
@@ -204,19 +205,22 @@ void shuffle_phase(JobContext *jc) {
                         if(!((*elem.first < *cur_pair.first)||(*cur_pair.first < *elem.first))){
                             // cur pair's key already in the map
                             jc->key_to_vec_map[elem.first].push_back(cur_pair);
+                            //jc->trying++;
                             found_item = true;
                         }
                     }
                     if(!found_item){
                         auto * new_vec = new IntermediateVec();
                         new_vec->push_back(cur_pair);
+                        //jc->trying++;
                         (jc->ac)++;  // count number of vectors in queue
                         jc->key_to_vec_map[cur_pair.first] = *new_vec;
                     }
                 }
             }
+            jc->trying++;
         }
-        jc->total_inter_len =+ (jc->ac << two_64)>> thirty_three_64; // the middle is the entire pair count
+        update_trying(jc, 3, jc->key_to_vec_map.size());
         unlock_mutex(&jc->mutexes.shuffle_mutex);
     }
 }
@@ -226,7 +230,8 @@ void shuffle_phase(JobContext *jc) {
  * @param jc
  */
 void reduce_phase(JobContext *jc) {
-    jc->j_state = {REDUCE_STAGE, 0};
+
+    //jc->j_state = {REDUCE_STAGE, 0};
 //    jc->ac += phase_shift;
     lock_mutex(&jc->mutexes.reduce_mutex);
     if (jc->first_iter){
@@ -247,6 +252,7 @@ void reduce_phase(JobContext *jc) {
         v = jc->queue[q_size-1];
         jc->cur_inter_len = v.size();
         jc->queue.pop_back();
+        jc->trying ++;
         jc->ac += one_64 << thirty_one_64; // +1 to middle section
         jc->client.reduce(&v,jc);
     }
@@ -271,6 +277,7 @@ void* thread_cycle(void *arg){
     if(jc->id_to_vec_map.empty()){
         jc->zero_thread = pthread_self();
     }
+    if(jc->trying >> 62 == 0){ update_trying(jc, 1, jc->input_vec.size());}
     jc->id_to_vec_map.insert({pthread_self(),cur_vec}); // adding zero thread
     unlock_mutex(&jc->mutexes.cycle_mutex);
     map_phase(jc);
@@ -279,21 +286,18 @@ void* thread_cycle(void *arg){
 
 //    print_log("@@@@@@@@@@\nThread passed MAP & SORT ",pthread_self(),jc);
 
+
     jc->barrier->barrier();
 
 //    print_log("@@@@@@@@@@\nThread passed BARRIER1 ",pthread_self(),jc);
 
     shuffle_phase(jc);
 
-//    print_log("@@@@@@@@@@\nThread passed SHUFFLE ",pthread_self(),jc);
 
     jc->barrier->barrier();
 
-//    print_log("@@@@@@@@@@\nThread passed BARRIER2 ",pthread_self(),jc);
 
     reduce_phase(jc);
-
-    print_log("@@@@@@@@@@\nThread passed REDUCE ",pthread_self(),jc);
 
     return nullptr;
 }
@@ -324,9 +328,9 @@ startMapReduceJob(const MapReduceClient &client, const InputVec &inputVec, Outpu
             .first_iter = true,
             .threads = threads,
             .cur_inter_len = 0,
-            .total_inter_len = 0,
             .length_ac{0},
             .ac{0},
+            .trying{0},
             .mutexes = {
                     .map_mutex = mutexes[0],
                     .emit2_mutex = mutexes[1],
@@ -403,6 +407,7 @@ void waitForJob(JobHandle job) {
 //    printf("\n@@@@@@@@@@\nREACHED WAIT-FOR-JOB\n@@@@@@@@@@\n");
 
     if (!jc->already_waited) {
+        //printf("Tread %lu -- got to waits for job", pthread_self());
         for (int i = 0; i < jc->num_threads; ++i) {
                 pthread_t tid = jc->threads[i];
 //                std::cout << "\n@@@@@@@@@@\nTrying to join " << tid << " \n@@@@@@@@@@\n" << std::endl;
