@@ -82,7 +82,22 @@
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/main.cpp">
+		<Unit filename="/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/MemoryConstants.h">
+			<Option target="ex4"/>
+		</Unit>
+		<Unit filename="/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/PhysicalMemory.cpp">
+			<Option target="ex4"/>
+		</Unit>
+		<Unit filename="/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/PhysicalMemory.h">
+			<Option target="ex4"/>
+		</Unit>
+		<Unit filename="/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/SimpleTest.cpp">
+			<Option target="ex4"/>
+		</Unit>
+		<Unit filename="/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/VirtualMemory.cpp">
+			<Option target="ex4"/>
+		</Unit>
+		<Unit filename="/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/VirtualMemory.h">
 			<Option target="ex4"/>
 		</Unit>
 		<Unit filename="/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/CMakeLists.txt">
