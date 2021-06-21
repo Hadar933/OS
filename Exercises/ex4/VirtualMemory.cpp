@@ -38,10 +38,9 @@ void update_params(uint64_t base, uint64_t curr_path, word_t value, int curr_wei
  * @param valPointer - a pointer to the item we need to remove
  * @return a frame to be evicted
  */
-int dfs(uint64_t depth, uint64_t base, uint64_t curr_path, bool *emptyFrame, uint64_t frameToKeep, uint64_t &max_path,
+int dfs(uint64_t depth, uint64_t base, uint64_t curr_path,uint64_t curr_weight,bool *emptyFrame, uint64_t frameToKeep, uint64_t &max_path,
         int &max_weight, word_t& toEvict, uint64_t& valPointer) {
     word_t value;
-    int curr_weight = 0;
     int dfsRet; int foundFrame =0;
     bool valueIsZero = true;
     if(depth == TABLES_DEPTH) { // recursion base
@@ -56,7 +55,7 @@ int dfs(uint64_t depth, uint64_t base, uint64_t curr_path, bool *emptyFrame, uin
            if(depth == TABLES_DEPTH -1){ // find path weights here
                update_params(base, curr_path, value, curr_weight, i, max_path, max_weight, toEvict, valPointer);
            }
-           dfsRet = dfs(depth+1, base, newPath, emptyFrame, frameToKeep,
+           dfsRet = dfs(depth+1, value, newPath,curr_weight, emptyFrame, frameToKeep,
                         max_path, max_weight, toEvict, valPointer); // recursive call for depth+1
            if(dfsRet!=0 && !foundFrame){ // dfs has found some non empty frame AND didnt found a frame till now
                if(*emptyFrame){ // the CHILD frame is currently empty - we can write to it
@@ -81,16 +80,16 @@ int dfs(uint64_t depth, uint64_t base, uint64_t curr_path, bool *emptyFrame, uin
 uint64_t findAddressToEvict(uint64_t frameToKeep){
     bool emptyFrame = false;
     uint64_t maxPath = 0; int maxWeight = 0; word_t evict_init = 0; uint64_t valPointer = 0;
-    uint64_t toEvict = dfs(0,0,0,&emptyFrame, frameToKeep, maxPath, maxWeight, evict_init, valPointer);
-    uint64_t frameIndex = 0;uint64_t evictedPageIndex = 0;uint64_t physicalAddress = 0;
-    bool freeFrame = frameIndex + 1 < NUM_FRAMES;
+    uint64_t toEvict = dfs(0,0,0,0,&emptyFrame, frameToKeep, maxPath, maxWeight, evict_init, valPointer);
+    bool freeFrame = evict_init + 1 < NUM_FRAMES;
     switch(freeFrame){
         case true: // haven't reached num_frames - there exists an unused frame
-            toEvict = frameIndex+1;
+            toEvict = evict_init+1;
             break;
         case false: // no free frame exists, must evict
-            PMevict(toEvict,evictedPageIndex); //TODO: need to update toEvict
-            PMwrite(physicalAddress,0);
+            PMevict(evict_init,maxPath);
+            PMwrite(valPointer,0);
+            toEvict = evict_init;
             break;
     }
     // found a frame containing an empty table:

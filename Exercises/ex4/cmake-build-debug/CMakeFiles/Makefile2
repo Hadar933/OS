@@ -195,12 +195,12 @@ tests/googletest-build/googletest/clean: tests/googletest-build/googletest/CMake
 CMakeFiles/SingleTableVirtualMemory.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/SingleTableVirtualMemory.dir/build.make CMakeFiles/SingleTableVirtualMemory.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/SingleTableVirtualMemory.dir/build.make CMakeFiles/SingleTableVirtualMemory.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles --progress-num=9,10,11,12 "Built target SingleTableVirtualMemory"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles --progress-num=7,8,9 "Built target SingleTableVirtualMemory"
 .PHONY : CMakeFiles/SingleTableVirtualMemory.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/SingleTableVirtualMemory.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles 4
+	$(CMAKE_COMMAND) -E cmake_progress_start /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles 3
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/SingleTableVirtualMemory.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles 0
 .PHONY : CMakeFiles/SingleTableVirtualMemory.dir/rule
@@ -222,12 +222,12 @@ CMakeFiles/SingleTableVirtualMemory.dir/clean:
 CMakeFiles/TestVirtualMemory.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/TestVirtualMemory.dir/build.make CMakeFiles/TestVirtualMemory.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/TestVirtualMemory.dir/build.make CMakeFiles/TestVirtualMemory.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles --progress-num=13,14,15,16 "Built target TestVirtualMemory"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles --progress-num=10,11,12 "Built target TestVirtualMemory"
 .PHONY : CMakeFiles/TestVirtualMemory.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/TestVirtualMemory.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles 4
+	$(CMAKE_COMMAND) -E cmake_progress_start /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles 3
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/TestVirtualMemory.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles 0
 .PHONY : CMakeFiles/TestVirtualMemory.dir/rule
@@ -249,12 +249,12 @@ CMakeFiles/TestVirtualMemory.dir/clean:
 CMakeFiles/UnreachableFramesVirtualMemory.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/UnreachableFramesVirtualMemory.dir/build.make CMakeFiles/UnreachableFramesVirtualMemory.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/UnreachableFramesVirtualMemory.dir/build.make CMakeFiles/UnreachableFramesVirtualMemory.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles --progress-num=17,18,19,20 "Built target UnreachableFramesVirtualMemory"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles --progress-num=13,14,15 "Built target UnreachableFramesVirtualMemory"
 .PHONY : CMakeFiles/UnreachableFramesVirtualMemory.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/UnreachableFramesVirtualMemory.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles 4
+	$(CMAKE_COMMAND) -E cmake_progress_start /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles 3
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/UnreachableFramesVirtualMemory.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles 0
 .PHONY : CMakeFiles/UnreachableFramesVirtualMemory.dir/rule
@@ -276,12 +276,12 @@ CMakeFiles/UnreachableFramesVirtualMemory.dir/clean:
 CMakeFiles/NoEvictionVirtualMemory.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/NoEvictionVirtualMemory.dir/build.make CMakeFiles/NoEvictionVirtualMemory.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/NoEvictionVirtualMemory.dir/build.make CMakeFiles/NoEvictionVirtualMemory.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles --progress-num=1,2,3,4 "Built target NoEvictionVirtualMemory"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles --progress-num=1,2,3 "Built target NoEvictionVirtualMemory"
 .PHONY : CMakeFiles/NoEvictionVirtualMemory.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/NoEvictionVirtualMemory.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles 4
+	$(CMAKE_COMMAND) -E cmake_progress_start /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles 3
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/NoEvictionVirtualMemory.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles 0
 .PHONY : CMakeFiles/NoEvictionVirtualMemory.dir/rule
@@ -303,12 +303,12 @@ CMakeFiles/NoEvictionVirtualMemory.dir/clean:
 CMakeFiles/VirtualMemory.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/VirtualMemory.dir/build.make CMakeFiles/VirtualMemory.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/VirtualMemory.dir/build.make CMakeFiles/VirtualMemory.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles --progress-num=21,22,23,24 "Built target VirtualMemory"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles --progress-num=16,17,18 "Built target VirtualMemory"
 .PHONY : CMakeFiles/VirtualMemory.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/VirtualMemory.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles 4
+	$(CMAKE_COMMAND) -E cmake_progress_start /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles 3
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/VirtualMemory.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles 0
 .PHONY : CMakeFiles/VirtualMemory.dir/rule
@@ -330,12 +330,12 @@ CMakeFiles/VirtualMemory.dir/clean:
 CMakeFiles/OffsetDifferentThanIndexMemory.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/OffsetDifferentThanIndexMemory.dir/build.make CMakeFiles/OffsetDifferentThanIndexMemory.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/OffsetDifferentThanIndexMemory.dir/build.make CMakeFiles/OffsetDifferentThanIndexMemory.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles --progress-num=5,6,7,8 "Built target OffsetDifferentThanIndexMemory"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles --progress-num=4,5,6 "Built target OffsetDifferentThanIndexMemory"
 .PHONY : CMakeFiles/OffsetDifferentThanIndexMemory.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/OffsetDifferentThanIndexMemory.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles 4
+	$(CMAKE_COMMAND) -E cmake_progress_start /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles 3
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/OffsetDifferentThanIndexMemory.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles 0
 .PHONY : CMakeFiles/OffsetDifferentThanIndexMemory.dir/rule
@@ -359,12 +359,12 @@ tests/CMakeFiles/ex4Tests_SingleTable.dir/all: tests/googletest-build/googletest
 tests/CMakeFiles/ex4Tests_SingleTable.dir/all: CMakeFiles/SingleTableVirtualMemory.dir/all
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/ex4Tests_SingleTable.dir/build.make tests/CMakeFiles/ex4Tests_SingleTable.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/ex4Tests_SingleTable.dir/build.make tests/CMakeFiles/ex4Tests_SingleTable.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles --progress-num=31,32 "Built target ex4Tests_SingleTable"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles --progress-num=25,26 "Built target ex4Tests_SingleTable"
 .PHONY : tests/CMakeFiles/ex4Tests_SingleTable.dir/all
 
 # Build rule for subdir invocation for target.
 tests/CMakeFiles/ex4Tests_SingleTable.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles 10
+	$(CMAKE_COMMAND) -E cmake_progress_start /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles 9
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tests/CMakeFiles/ex4Tests_SingleTable.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles 0
 .PHONY : tests/CMakeFiles/ex4Tests_SingleTable.dir/rule
@@ -388,12 +388,12 @@ tests/CMakeFiles/ex4Tests_OffsetDifferentThanIndex.dir/all: tests/googletest-bui
 tests/CMakeFiles/ex4Tests_OffsetDifferentThanIndex.dir/all: CMakeFiles/OffsetDifferentThanIndexMemory.dir/all
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/ex4Tests_OffsetDifferentThanIndex.dir/build.make tests/CMakeFiles/ex4Tests_OffsetDifferentThanIndex.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/ex4Tests_OffsetDifferentThanIndex.dir/build.make tests/CMakeFiles/ex4Tests_OffsetDifferentThanIndex.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles --progress-num=29,30 "Built target ex4Tests_OffsetDifferentThanIndex"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles --progress-num=23,24 "Built target ex4Tests_OffsetDifferentThanIndex"
 .PHONY : tests/CMakeFiles/ex4Tests_OffsetDifferentThanIndex.dir/all
 
 # Build rule for subdir invocation for target.
 tests/CMakeFiles/ex4Tests_OffsetDifferentThanIndex.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles 10
+	$(CMAKE_COMMAND) -E cmake_progress_start /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles 9
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tests/CMakeFiles/ex4Tests_OffsetDifferentThanIndex.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles 0
 .PHONY : tests/CMakeFiles/ex4Tests_OffsetDifferentThanIndex.dir/rule
@@ -417,12 +417,12 @@ tests/CMakeFiles/ex4Tests_NormalConstants.dir/all: tests/googletest-build/google
 tests/CMakeFiles/ex4Tests_NormalConstants.dir/all: CMakeFiles/VirtualMemory.dir/all
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/ex4Tests_NormalConstants.dir/build.make tests/CMakeFiles/ex4Tests_NormalConstants.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/ex4Tests_NormalConstants.dir/build.make tests/CMakeFiles/ex4Tests_NormalConstants.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles --progress-num=27,28 "Built target ex4Tests_NormalConstants"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles --progress-num=21,22 "Built target ex4Tests_NormalConstants"
 .PHONY : tests/CMakeFiles/ex4Tests_NormalConstants.dir/all
 
 # Build rule for subdir invocation for target.
 tests/CMakeFiles/ex4Tests_NormalConstants.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles 10
+	$(CMAKE_COMMAND) -E cmake_progress_start /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles 9
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tests/CMakeFiles/ex4Tests_NormalConstants.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles 0
 .PHONY : tests/CMakeFiles/ex4Tests_NormalConstants.dir/rule
@@ -446,12 +446,12 @@ tests/CMakeFiles/ex4Tests_SmallConstants.dir/all: tests/googletest-build/googlet
 tests/CMakeFiles/ex4Tests_SmallConstants.dir/all: CMakeFiles/TestVirtualMemory.dir/all
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/ex4Tests_SmallConstants.dir/build.make tests/CMakeFiles/ex4Tests_SmallConstants.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/ex4Tests_SmallConstants.dir/build.make tests/CMakeFiles/ex4Tests_SmallConstants.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles --progress-num=33,34 "Built target ex4Tests_SmallConstants"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles --progress-num=27,28 "Built target ex4Tests_SmallConstants"
 .PHONY : tests/CMakeFiles/ex4Tests_SmallConstants.dir/all
 
 # Build rule for subdir invocation for target.
 tests/CMakeFiles/ex4Tests_SmallConstants.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles 10
+	$(CMAKE_COMMAND) -E cmake_progress_start /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles 9
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tests/CMakeFiles/ex4Tests_SmallConstants.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles 0
 .PHONY : tests/CMakeFiles/ex4Tests_SmallConstants.dir/rule
@@ -475,12 +475,12 @@ tests/CMakeFiles/ex4Tests_NoEviction.dir/all: tests/googletest-build/googletest/
 tests/CMakeFiles/ex4Tests_NoEviction.dir/all: CMakeFiles/NoEvictionVirtualMemory.dir/all
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/ex4Tests_NoEviction.dir/build.make tests/CMakeFiles/ex4Tests_NoEviction.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/ex4Tests_NoEviction.dir/build.make tests/CMakeFiles/ex4Tests_NoEviction.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles --progress-num=25,26 "Built target ex4Tests_NoEviction"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles --progress-num=19,20 "Built target ex4Tests_NoEviction"
 .PHONY : tests/CMakeFiles/ex4Tests_NoEviction.dir/all
 
 # Build rule for subdir invocation for target.
 tests/CMakeFiles/ex4Tests_NoEviction.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles 10
+	$(CMAKE_COMMAND) -E cmake_progress_start /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles 9
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tests/CMakeFiles/ex4Tests_NoEviction.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles 0
 .PHONY : tests/CMakeFiles/ex4Tests_NoEviction.dir/rule
@@ -504,12 +504,12 @@ tests/CMakeFiles/ex4Tests_UnreachableFrames.dir/all: tests/googletest-build/goog
 tests/CMakeFiles/ex4Tests_UnreachableFrames.dir/all: CMakeFiles/UnreachableFramesVirtualMemory.dir/all
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/ex4Tests_UnreachableFrames.dir/build.make tests/CMakeFiles/ex4Tests_UnreachableFrames.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/ex4Tests_UnreachableFrames.dir/build.make tests/CMakeFiles/ex4Tests_UnreachableFrames.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles --progress-num=35,36 "Built target ex4Tests_UnreachableFrames"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles --progress-num=29,30 "Built target ex4Tests_UnreachableFrames"
 .PHONY : tests/CMakeFiles/ex4Tests_UnreachableFrames.dir/all
 
 # Build rule for subdir invocation for target.
 tests/CMakeFiles/ex4Tests_UnreachableFrames.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles 10
+	$(CMAKE_COMMAND) -E cmake_progress_start /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles 9
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tests/CMakeFiles/ex4Tests_UnreachableFrames.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles 0
 .PHONY : tests/CMakeFiles/ex4Tests_UnreachableFrames.dir/rule
@@ -532,7 +532,7 @@ tests/googletest-build/googlemock/CMakeFiles/gmock_main.dir/all: tests/googletes
 tests/googletest-build/googlemock/CMakeFiles/gmock_main.dir/all: tests/googletest-build/googlemock/CMakeFiles/gmock.dir/all
 	$(MAKE) $(MAKESILENT) -f tests/googletest-build/googlemock/CMakeFiles/gmock_main.dir/build.make tests/googletest-build/googlemock/CMakeFiles/gmock_main.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests/googletest-build/googlemock/CMakeFiles/gmock_main.dir/build.make tests/googletest-build/googlemock/CMakeFiles/gmock_main.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles --progress-num=39,40 "Built target gmock_main"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles --progress-num=33,34 "Built target gmock_main"
 .PHONY : tests/googletest-build/googlemock/CMakeFiles/gmock_main.dir/all
 
 # Build rule for subdir invocation for target.
@@ -559,7 +559,7 @@ tests/googletest-build/googlemock/CMakeFiles/gmock_main.dir/clean:
 tests/googletest-build/googlemock/CMakeFiles/gmock.dir/all: tests/googletest-build/googletest/CMakeFiles/gtest.dir/all
 	$(MAKE) $(MAKESILENT) -f tests/googletest-build/googlemock/CMakeFiles/gmock.dir/build.make tests/googletest-build/googlemock/CMakeFiles/gmock.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests/googletest-build/googlemock/CMakeFiles/gmock.dir/build.make tests/googletest-build/googlemock/CMakeFiles/gmock.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles --progress-num=37,38 "Built target gmock"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles --progress-num=31,32 "Built target gmock"
 .PHONY : tests/googletest-build/googlemock/CMakeFiles/gmock.dir/all
 
 # Build rule for subdir invocation for target.
@@ -586,7 +586,7 @@ tests/googletest-build/googlemock/CMakeFiles/gmock.dir/clean:
 tests/googletest-build/googletest/CMakeFiles/gtest_main.dir/all: tests/googletest-build/googletest/CMakeFiles/gtest.dir/all
 	$(MAKE) $(MAKESILENT) -f tests/googletest-build/googletest/CMakeFiles/gtest_main.dir/build.make tests/googletest-build/googletest/CMakeFiles/gtest_main.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests/googletest-build/googletest/CMakeFiles/gtest_main.dir/build.make tests/googletest-build/googletest/CMakeFiles/gtest_main.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles --progress-num=43,44 "Built target gtest_main"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles --progress-num=37,38 "Built target gtest_main"
 .PHONY : tests/googletest-build/googletest/CMakeFiles/gtest_main.dir/all
 
 # Build rule for subdir invocation for target.
@@ -613,7 +613,7 @@ tests/googletest-build/googletest/CMakeFiles/gtest_main.dir/clean:
 tests/googletest-build/googletest/CMakeFiles/gtest.dir/all:
 	$(MAKE) $(MAKESILENT) -f tests/googletest-build/googletest/CMakeFiles/gtest.dir/build.make tests/googletest-build/googletest/CMakeFiles/gtest.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests/googletest-build/googletest/CMakeFiles/gtest.dir/build.make tests/googletest-build/googletest/CMakeFiles/gtest.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles --progress-num=41,42 "Built target gtest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/cmake-build-debug/CMakeFiles --progress-num=35,36 "Built target gtest"
 .PHONY : tests/googletest-build/googletest/CMakeFiles/gtest.dir/all
 
 # Build rule for subdir invocation for target.

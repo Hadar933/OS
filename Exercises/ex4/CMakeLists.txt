@@ -12,7 +12,6 @@ set(vm_source_files
         VirtualMemory.h VirtualMemory.cpp
         PhysicalMemory.h PhysicalMemory.cpp
         MemoryConstants.h
-        SimpleTest.cpp
         # add your own files here
         )
 

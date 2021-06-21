@@ -914,14 +914,6 @@
 			<Option target="VirtualMemory"/>
 			<Option target="OffsetDifferentThanIndexMemory"/>
 		</Unit>
-		<Unit filename="/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/SimpleTest.cpp">
-			<Option target="SingleTableVirtualMemory"/>
-			<Option target="TestVirtualMemory"/>
-			<Option target="UnreachableFramesVirtualMemory"/>
-			<Option target="NoEvictionVirtualMemory"/>
-			<Option target="VirtualMemory"/>
-			<Option target="OffsetDifferentThanIndexMemory"/>
-		</Unit>
 		<Unit filename="/cs/usr/hadar933/Desktop/OS/OS/Exercises/ex4/VirtualMemory.cpp">
 			<Option target="SingleTableVirtualMemory"/>
 			<Option target="TestVirtualMemory"/>

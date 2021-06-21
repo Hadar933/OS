@@ -426,48 +426,6 @@ PhysicalMemory.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/OffsetDifferentThanIndexMemory.dir/build.make CMakeFiles/OffsetDifferentThanIndexMemory.dir/PhysicalMemory.cpp.s
 .PHONY : PhysicalMemory.cpp.s
 
-SimpleTest.o: SimpleTest.cpp.o
-
-.PHONY : SimpleTest.o
-
-# target to build an object file
-SimpleTest.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/SingleTableVirtualMemory.dir/build.make CMakeFiles/SingleTableVirtualMemory.dir/SimpleTest.cpp.o
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/TestVirtualMemory.dir/build.make CMakeFiles/TestVirtualMemory.dir/SimpleTest.cpp.o
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/UnreachableFramesVirtualMemory.dir/build.make CMakeFiles/UnreachableFramesVirtualMemory.dir/SimpleTest.cpp.o
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/NoEvictionVirtualMemory.dir/build.make CMakeFiles/NoEvictionVirtualMemory.dir/SimpleTest.cpp.o
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/VirtualMemory.dir/build.make CMakeFiles/VirtualMemory.dir/SimpleTest.cpp.o
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/OffsetDifferentThanIndexMemory.dir/build.make CMakeFiles/OffsetDifferentThanIndexMemory.dir/SimpleTest.cpp.o
-.PHONY : SimpleTest.cpp.o
-
-SimpleTest.i: SimpleTest.cpp.i
-
-.PHONY : SimpleTest.i
-
-# target to preprocess a source file
-SimpleTest.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/SingleTableVirtualMemory.dir/build.make CMakeFiles/SingleTableVirtualMemory.dir/SimpleTest.cpp.i
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/TestVirtualMemory.dir/build.make CMakeFiles/TestVirtualMemory.dir/SimpleTest.cpp.i
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/UnreachableFramesVirtualMemory.dir/build.make CMakeFiles/UnreachableFramesVirtualMemory.dir/SimpleTest.cpp.i
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/NoEvictionVirtualMemory.dir/build.make CMakeFiles/NoEvictionVirtualMemory.dir/SimpleTest.cpp.i
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/VirtualMemory.dir/build.make CMakeFiles/VirtualMemory.dir/SimpleTest.cpp.i
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/OffsetDifferentThanIndexMemory.dir/build.make CMakeFiles/OffsetDifferentThanIndexMemory.dir/SimpleTest.cpp.i
-.PHONY : SimpleTest.cpp.i
-
-SimpleTest.s: SimpleTest.cpp.s
-
-.PHONY : SimpleTest.s
-
-# target to generate assembly for a file
-SimpleTest.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/SingleTableVirtualMemory.dir/build.make CMakeFiles/SingleTableVirtualMemory.dir/SimpleTest.cpp.s
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/TestVirtualMemory.dir/build.make CMakeFiles/TestVirtualMemory.dir/SimpleTest.cpp.s
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/UnreachableFramesVirtualMemory.dir/build.make CMakeFiles/UnreachableFramesVirtualMemory.dir/SimpleTest.cpp.s
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/NoEvictionVirtualMemory.dir/build.make CMakeFiles/NoEvictionVirtualMemory.dir/SimpleTest.cpp.s
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/VirtualMemory.dir/build.make CMakeFiles/VirtualMemory.dir/SimpleTest.cpp.s
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/OffsetDifferentThanIndexMemory.dir/build.make CMakeFiles/OffsetDifferentThanIndexMemory.dir/SimpleTest.cpp.s
-.PHONY : SimpleTest.cpp.s
-
 VirtualMemory.o: VirtualMemory.cpp.o
 
 .PHONY : VirtualMemory.o
@@ -541,9 +499,6 @@ help:
 	@echo "... PhysicalMemory.o"
 	@echo "... PhysicalMemory.i"
 	@echo "... PhysicalMemory.s"
-	@echo "... SimpleTest.o"
-	@echo "... SimpleTest.i"
-	@echo "... SimpleTest.s"
 	@echo "... VirtualMemory.o"
 	@echo "... VirtualMemory.i"
 	@echo "... VirtualMemory.s"
