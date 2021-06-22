@@ -86,6 +86,9 @@ uint64_t findAddressToEvict(uint64_t frameToKeep){
     uint64_t maxPath = 0; int maxWeight = 0; word_t evict_init = 0; uint64_t valPointer = 0; word_t maxWeightFrame = 0;
     uint64_t toEvict = dfs(0,0,0,WEIGHT_EVEN,&emptyFrame, frameToKeep, maxPath, maxWeight, evict_init, valPointer, maxWeightFrame);
     bool freeFrame = evict_init + 1 < NUM_FRAMES;
+    if (toEvict){
+        return toEvict;
+    }
     switch(freeFrame){
         case true: // haven't reached num_frames - there exists an unused frame
             toEvict = evict_init+1;
@@ -138,8 +141,6 @@ uint64_t toPhysicalAddress(uint64_t virtualAddress){
         if(addr1 == 0){
             handleZeroAddress(i, p_i, addr1, baseAddress, frameToKeep, virtualAddress);
         }
-//        if(i == TABLES_DEPTH -1){PMrestore(addr1, virtualAddress >> OFFSET_WIDTH);}
-//        else{clearTable(addr1);}
         frameToKeep = addr1;
         baseAddress = PAGE_SIZE* addr1;
 
