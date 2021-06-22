@@ -20,7 +20,7 @@ void update_params(uint64_t base, uint64_t curr_path, word_t value, int curr_wei
     if(curr_weight > max_weight){
      max_path = curr_path;
      max_weight = curr_weight;
-     toEvict = value; // save frame to evict
+     //toEvict = value; // save frame to evict
      valPointer = base*PAGE_SIZE + i;// save writing address
     }
 }
@@ -40,6 +40,7 @@ void update_params(uint64_t base, uint64_t curr_path, word_t value, int curr_wei
  */
 int dfs(uint64_t depth, uint64_t base, uint64_t curr_path,uint64_t curr_weight,bool *emptyFrame, uint64_t frameToKeep, uint64_t &max_path,
         int &max_weight, word_t& toEvict, uint64_t& valPointer) {
+    toEvict = (toEvict > (int)base) ? toEvict:base;
     word_t value;
     int dfsRet; int foundFrame =0;
     bool valueIsZero = true;
@@ -57,6 +58,7 @@ int dfs(uint64_t depth, uint64_t base, uint64_t curr_path,uint64_t curr_weight,b
            }
            dfsRet = dfs(depth+1, value, newPath,curr_weight, emptyFrame, frameToKeep,
                         max_path, max_weight, toEvict, valPointer); // recursive call for depth+1
+
            if(dfsRet!=0 && !foundFrame){ // dfs has found some non empty frame AND didnt found a frame till now
                if(*emptyFrame){ // the CHILD frame is currently empty - we can write to it
                    PMwrite(base*PAGE_SIZE+i,0); // writing to the parent 0 (unlink from parent)
@@ -74,7 +76,7 @@ int dfs(uint64_t depth, uint64_t base, uint64_t curr_path,uint64_t curr_weight,b
 }
 
 /**
- * finds an adress to evict by splitting to various cases
+ * finds an address to evict by splitting to various cases
  * @return
  */
 uint64_t findAddressToEvict(uint64_t frameToKeep){
@@ -107,7 +109,7 @@ uint64_t findAddressToEvict(uint64_t frameToKeep){
 uint64_t handleZeroAddress(int i, uint64_t p_i, word_t &addr1, uint64_t &baseAddress, uint64_t& frameToKeep) {
     uint64_t evicted = findAddressToEvict(frameToKeep);
     if(i==TABLES_DEPTH-1){ //reached tree leaves - can restore evicted
-        PMrestore(baseAddress+p_i, evicted);
+        PMrestore(evicted,baseAddress+p_i);
     }
     else{
         clearTable(evicted);
@@ -127,8 +129,8 @@ uint64_t toPhysicalAddress(uint64_t virtualAddress){
     uint64_t offset = virtualAddress % PAGE_SIZE;
     word_t addr1 = 0;
     uint64_t baseAddress = 0;
-    for(int i =0; i<TABLES_DEPTH;i++){
-        uint64_t p_i = virtualAddress >> (TABLES_DEPTH-i)* OFFSET_WIDTH;
+    for(int i =0; i < TABLES_DEPTH;i++){
+        uint64_t p_i = virtualAddress >> (TABLES_DEPTH-i) * OFFSET_WIDTH;
         p_i = p_i % PAGE_SIZE;
         PMread(baseAddress+p_i,&addr1);
         if(addr1 == 0){
