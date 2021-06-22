@@ -15,12 +15,13 @@ void VMinitialize() {
 /**
  * updates the relevant reference parameters
  */
-void update_params(uint64_t base, uint64_t curr_path, word_t value, int curr_weight, uint64_t i, uint64_t &max_path,
-                   int &max_weight, word_t &toEvict, uint64_t &valPointer) {
+void update_params(uint64_t base, uint64_t curr_path, uint64_t &curr_weight, uint64_t i, uint64_t &max_path,
+                   int &max_weight, uint64_t &valPointer, word_t& maxWeightFrame, word_t value) {
+    curr_weight += (curr_path%2 == 0) ? WEIGHT_EVEN:WEIGHT_ODD;
     if(curr_weight > max_weight){
      max_path = curr_path;
      max_weight = curr_weight;
-     //toEvict = value; // save frame to evict
+     maxWeightFrame = value;
      valPointer = base*PAGE_SIZE + i;// save writing address
     }
 }
@@ -38,8 +39,8 @@ void update_params(uint64_t base, uint64_t curr_path, word_t value, int curr_wei
  * @param valPointer - a pointer to the item we need to remove
  * @return a frame to be evicted
  */
-int dfs(uint64_t depth, uint64_t base, uint64_t curr_path,uint64_t curr_weight,bool *emptyFrame, uint64_t frameToKeep, uint64_t &max_path,
-        int &max_weight, word_t& toEvict, uint64_t& valPointer) {
+int dfs(uint64_t depth, uint64_t base, uint64_t curr_path, uint64_t curr_weight,bool *emptyFrame, uint64_t frameToKeep, uint64_t &max_path,
+        int &max_weight, word_t& toEvict, uint64_t& valPointer, word_t & maxWeightFrame) {
     toEvict = (toEvict > (int)base) ? toEvict:base;
     word_t value;
     int dfsRet; int foundFrame =0;
@@ -48,16 +49,17 @@ int dfs(uint64_t depth, uint64_t base, uint64_t curr_path,uint64_t curr_weight,b
         return 0;
     }
     for (uint64_t i=0;i<PAGE_SIZE;i++){
+        if(i > 0 && value > 0){curr_weight -= (value%2 == 0)? WEIGHT_EVEN:WEIGHT_ODD;}
         PMread(i+base*PAGE_SIZE,&value); // read content of frame
         if(value!=0){ // frame isn't empty
            if(value%2==0){curr_weight += WEIGHT_EVEN;} else{curr_weight += WEIGHT_ODD;}
            uint64_t newPath = (curr_path << OFFSET_WIDTH) +i; // path to the current frame
            valueIsZero = false; // frame isn't empty boolean indicator
            if(depth == TABLES_DEPTH -1){ // find path weights here
-               update_params(base, curr_path, value, curr_weight, i, max_path, max_weight, toEvict, valPointer);
+               update_params(base, newPath, (curr_weight), i, max_path, max_weight, valPointer, maxWeightFrame, value);
            }
-           dfsRet = dfs(depth+1, value, newPath,curr_weight, emptyFrame, frameToKeep,
-                        max_path, max_weight, toEvict, valPointer); // recursive call for depth+1
+           dfsRet = dfs(depth+1, value, newPath, curr_weight, emptyFrame, frameToKeep,
+                        max_path, max_weight, toEvict, valPointer, maxWeightFrame); // recursive call for depth+1
 
            if(dfsRet!=0 && !foundFrame){ // dfs has found some non empty frame AND didnt found a frame till now
                if(*emptyFrame){ // the CHILD frame is currently empty - we can write to it
@@ -81,17 +83,17 @@ int dfs(uint64_t depth, uint64_t base, uint64_t curr_path,uint64_t curr_weight,b
  */
 uint64_t findAddressToEvict(uint64_t frameToKeep){
     bool emptyFrame = false;
-    uint64_t maxPath = 0; int maxWeight = 0; word_t evict_init = 0; uint64_t valPointer = 0;
-    uint64_t toEvict = dfs(0,0,0,0,&emptyFrame, frameToKeep, maxPath, maxWeight, evict_init, valPointer);
+    uint64_t maxPath = 0; int maxWeight = 0; word_t evict_init = 0; uint64_t valPointer = 0; word_t maxWeightFrame = 0;
+    uint64_t toEvict = dfs(0,0,0,WEIGHT_EVEN,&emptyFrame, frameToKeep, maxPath, maxWeight, evict_init, valPointer, maxWeightFrame);
     bool freeFrame = evict_init + 1 < NUM_FRAMES;
     switch(freeFrame){
         case true: // haven't reached num_frames - there exists an unused frame
             toEvict = evict_init+1;
             break;
         case false: // no free frame exists, must evict
-            PMevict(evict_init,maxPath);
+            PMevict(maxWeightFrame,maxPath);
             PMwrite(valPointer,0);
-            toEvict = evict_init;
+            toEvict = maxWeightFrame;
             break;
     }
     // found a frame containing an empty table:
@@ -106,10 +108,10 @@ uint64_t findAddressToEvict(uint64_t frameToKeep){
  * @param addr1
  * @param baseAddress
  */
-uint64_t handleZeroAddress(int i, uint64_t p_i, word_t &addr1, uint64_t &baseAddress, uint64_t& frameToKeep) {
+uint64_t handleZeroAddress(int i, uint64_t p_i, word_t &addr1, uint64_t &baseAddress, uint64_t& frameToKeep, uint64_t virtualAddress) {
     uint64_t evicted = findAddressToEvict(frameToKeep);
     if(i==TABLES_DEPTH-1){ //reached tree leaves - can restore evicted
-        PMrestore(evicted,baseAddress+p_i);
+        PMrestore(evicted,virtualAddress >> OFFSET_WIDTH);
     }
     else{
         clearTable(evicted);
@@ -129,15 +131,18 @@ uint64_t toPhysicalAddress(uint64_t virtualAddress){
     uint64_t offset = virtualAddress % PAGE_SIZE;
     word_t addr1 = 0;
     uint64_t baseAddress = 0;
-    for(int i =0; i < TABLES_DEPTH;i++){
-        uint64_t p_i = virtualAddress >> (TABLES_DEPTH-i) * OFFSET_WIDTH;
+    for(int i =0; i < TABLES_DEPTH;++i){
+        uint64_t p_i = virtualAddress >> ((TABLES_DEPTH-i) * OFFSET_WIDTH);
         p_i = p_i % PAGE_SIZE;
         PMread(baseAddress+p_i,&addr1);
         if(addr1 == 0){
-            handleZeroAddress(i, p_i, addr1, baseAddress, frameToKeep);
+            handleZeroAddress(i, p_i, addr1, baseAddress, frameToKeep, virtualAddress);
         }
+//        if(i == TABLES_DEPTH -1){PMrestore(addr1, virtualAddress >> OFFSET_WIDTH);}
+//        else{clearTable(addr1);}
         frameToKeep = addr1;
         baseAddress = PAGE_SIZE* addr1;
+
     }
     return addr1 * PAGE_SIZE + offset;
 
@@ -151,6 +156,7 @@ int VMread(uint64_t virtualAddress, word_t* value) {
     }
     uint64_t physicalAddress = toPhysicalAddress(virtualAddress);
     PMread(physicalAddress,value);
+
     return 1;
 }
 
